@@ -15,8 +15,12 @@
 %}
 
 /*
-	Espressioni Regolari 
+	Espressioni Regolari
 */
+
+/* HEADERS */
+INTRO_XML = "<?xml version='1.0' encoding='UTF-8'?>"
+INTRO_DOC = "<!DOCTYPE book SYSTEM \"book.dtd\">"
 
 /* ELEMENTS */
 BOOK = "book"
@@ -51,12 +55,11 @@ CLOSE_TAG_CLOSE = "/>"
 ATT_SEPARATOR = "="
 
 /* VALUES */
-
-/* Usato per i valori di ATTRIBUTES (CDATA)*/ 
+/* VALUE - Usato per i valori CDATA */ 
 VALUE = \"[ a-zA-Z0-9\-\_\.]+\"
 ACCENT = (è|é|ò|à|ù|ç|ì)
 SYMBOLS = (\.|\,|\;|\:|\?|\^|\!|\"|\'|\$|\&|\£|\%|\(|\)|\=|\*|\[|\]|\\|\+|\-|\_|§|°|#|@)
-/* Usato come PCDATA - DA VERIFICARE */
+/* CONTENT - Usato come PCDATA - DA VERIFICARE */
 CONTENT =(({NL}|[ \t])*({ACCENT}|{SYMBOLS}|[a-zA-Z0-9])+({NL}|[ \t])*)*
 
 /* COMMENT */
@@ -74,9 +77,19 @@ NL = \r\n|\r|\n
 	Regole di traduzione
 */
 
+/* HEADERS */
+{INTRO_XML}
+	{
+		/* EMPTY */
+	}
 
+{INTRO_DOC}
+	{
+		/* EMPTY */
+	}
+
+	
 /* ELEMENTS */
-
 {BOOK} 
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
@@ -173,8 +186,8 @@ NL = \r\n|\r|\n
 		return Parser.NOTE; 
 	}
 
-/* ATTRIBUTES */
 
+/* ATTRIBUTES */
 {EDITION}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
@@ -204,9 +217,9 @@ NL = \r\n|\r|\n
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.PATH; 
 	}
-	
-/* SYMBOLS */
 
+
+/* SYMBOLS */
 {TAG_OPEN}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
@@ -218,11 +231,13 @@ NL = \r\n|\r|\n
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.TAG_CLOSE; 
 	}
+	
 {CLOSE_TAG_OPEN}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.CLOSE_TAG_OPEN; 
 	}
+	
 {CLOSE_TAG_CLOSE}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
@@ -267,19 +282,27 @@ NL = \r\n|\r|\n
 		/* EMPTY */
 	}
 
-	
+
 /* SPECIAL CHARACTERS */
 {NL}
 	{
 		return Parser.NL;
 	}
-		
-	
+			
 /* whitespace */
-[ \t]+ 			{ }
+[ \t]+ 
+	{
+		/* EMPTY */
+	}
 
 /* backspace */
-\b    { System.err.println("Sorry, backspace doesn't work"); }
+\b    
+	{ 
+		System.err.println("Sorry, backspace doesn't work");
+	}
 
 /* error fallback */
-[^]   { System.err.println("Error: unexpected character '"+yytext()+"'"); return -1; }
+[^] 
+	{ 
+		System.err.println("Error: unexpected character '"+yytext()+"'"); return -1; 
+	}
