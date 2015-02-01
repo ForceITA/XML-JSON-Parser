@@ -90,219 +90,228 @@ NL = \r\n|\r|\n
 
 	
 /* ELEMENTS */
-{BOOK} 
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.BOOK; 
-	}
+<IN_TAG>{
+	{BOOK} 
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.BOOK; 
+		}
 
-{DEDICATION}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.DEDICATION;		
-	}
+	{DEDICATION}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.DEDICATION;		
+		}
 
-{PREFACE}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.PREFACE; 
-	}
-	
-{PART}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.BOOK; 
-	}
+	{PREFACE}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.PREFACE; 
+		}
+		
+	{PART}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.BOOK; 
+		}
 
-{TOC}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.TOC; 
-	}
+	{TOC}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.TOC; 
+		}
 
-{LOF}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.LOF; 
-	}
+	{LOF}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.LOF; 
+		}
 
-{LOT}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.LOT; 
-	}
-	
-{ITEM}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.ITEM; 
-	}
-	
-{CHAPTER}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.CHAPTER;
-	}
+	{LOT}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.LOT; 
+		}
+		
+	{ITEM}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.ITEM; 
+		}
+		
+	{CHAPTER}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.CHAPTER;
+		}
 
-{SECTION}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.SECTION;
-	}
+	{SECTION}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.SECTION;
+		}
 
-{FIGURE}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.FIGURE; 
-	}
+	{FIGURE}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.FIGURE; 
+		}
 
-{TABLE}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.TABLE; 
-	}
-	
-{ROW}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.ROW; 
-	}
+	{TABLE}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.TABLE; 
+		}
+		
+	{ROW}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.ROW; 
+		}
 
-{CELL}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.CELL; 
-	}
-	
-{AUTHOR_NOTES}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.AUTHOR_NOTES;
-	}
+	{CELL}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.CELL; 
+		}
+		
+	{AUTHOR_NOTES}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.AUTHOR_NOTES;
+		}
 
-{NOTE}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.NOTE; 
-	}
-
+	{NOTE}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.NOTE; 
+		}
+}
 
 /* ATTRIBUTES */
-{EDITION}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.EDITION; 
-	}
-	
-{ID}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.ID; 
-	}
-	
-{TITLE}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.TITLE; 
-	}
-	
-{CAPTION}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.CAPTION; 
-	}
-	
-{PATH}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.PATH; 
-	}
-
+<IN_TAG>{
+	{EDITION}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.EDITION; 
+		}
+		
+	{ID}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.ID; 
+		}
+		
+	{TITLE}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.TITLE; 
+		}
+		
+	{CAPTION}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.CAPTION; 
+		}
+		
+	{PATH}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.PATH; 
+		}
+}
 
 /* SYMBOLS */
-{TAG_OPEN}
+
+<YYINITIAL, IN_CONTENT>{TAG_OPEN}
 	{
+		yybegin(IN_TAG);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.TAG_OPEN; 
 	}
-
-{TAG_CLOSE}
+<IN_TAG>{TAG_CLOSE}
 	{
+		yybegin(IN_CONTENT);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.TAG_CLOSE; 
 	}
-	
-{CLOSE_TAG_OPEN}
+
+<IN_CONTENT>{CLOSE_TAG_OPEN}
 	{
+		yybegin(IN_TAG);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.CLOSE_TAG_OPEN; 
 	}
 	
-{CLOSE_TAG_CLOSE}
+<IN_TAG>{CLOSE_TAG_CLOSE}
 	{
+		yybegin(IN_CONTENT);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.CLOSE_TAG_CLOSE; 
 	}
 	
-{ATT_SEPARATOR}
+<IN_TAG>{ATT_SEPARATOR}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.ATT_SEPARATOR; 
 	}
 
 /* VALUES */
-{VALUE}
+<IN_TAG>{VALUE}
 	{
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.VALUE; 
 	}
 	
-{ACCENT}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.ACCENT; 
-	}
-	
-{SYMBOLS}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.SYMBOLS; 
-	}
+<IN_CONTENT>{	
+	{ACCENT}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.ACCENT; 
+		}
+		
+	{SYMBOLS}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.SYMBOLS; 
+		}
 
-{CONTENT}
-	{
-		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.CONTENT; 
-	}
-	
+	{CONTENT}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.CONTENT; 
+		}
+}	
 
 /* COMMENT */
-{COMMENT}
+<IN_CONTENT>{COMMENT}
 	{
 		/* EMPTY */
 	}
 
 
 /* SPECIAL CHARACTERS */
-{NL}
-	{
-		return Parser.NL;
-	}
-			
-/* whitespace */
-[ \t]+ 
-	{
-		/* EMPTY */
-	}
+<YYINITIAL, IN_TAG, IN_CONTENT>{
+	{NL}
+		{
+			return Parser.NL;
+		}
+	
+	/* whitespace */
+	[ \t]+ 
+		{
+			/* EMPTY */
+		}
 
-/* backspace */
-\b    
-	{ 
-		System.err.println("Sorry, backspace doesn't work");
-	}
+	/* backspace */
+	\b    
+		{ 
+			System.err.println("Sorry, backspace doesn't work");
+		}
 
-/* error fallback */
-[^] 
-	{ 
-		System.err.println("Error: unexpected character '"+yytext()+"'"); return -1; 
-	}
+	/* error fallback */
+	[^] 
+		{ 
+			System.err.println("Error: unexpected character '"+yytext()+"'"); return -1; 
+		}
+}

@@ -3,6 +3,7 @@
 *.db
 in.xml
 out.json
+*.java~
 
 
 # Mobile Tools for Java (J2ME)

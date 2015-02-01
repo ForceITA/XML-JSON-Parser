@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE book SYSTEM "book.dtd">
+<book edition = "some text" >
+	out text
+	<dedication>inner</dedication>
+</book>

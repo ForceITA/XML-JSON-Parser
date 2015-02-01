@@ -1,0 +1,4 @@
+{
+	"tag": "book",
+	"content": ["testo \b"]
+}

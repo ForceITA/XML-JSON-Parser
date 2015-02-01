@@ -1,0 +1,3 @@
+<book edition = "some text" >
+	testo
+</ book >

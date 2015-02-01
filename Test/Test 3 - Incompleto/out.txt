@@ -1,0 +1,2 @@
+match: --<--
+action [111] { System.err.println("Error: unexpected character '" + yytext() + "'"); return -1; }
