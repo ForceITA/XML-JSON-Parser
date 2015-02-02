@@ -4,6 +4,7 @@
 %%
 
 %byaccj
+%debug
 
 %{
   private Parser yyparser;
@@ -91,7 +92,7 @@ NL = \r\n|\r|\n
 	
 /* ELEMENTS */
 <IN_TAG>{
-	{BOOK} 
+	{BOOK}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.BOOK; 
@@ -112,7 +113,7 @@ NL = \r\n|\r|\n
 	{PART}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
-			return Parser.BOOK; 
+			return Parser.PART; 
 		}
 
 	{TOC}
@@ -186,10 +187,11 @@ NL = \r\n|\r|\n
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.NOTE; 
 		}
-}
+ 
+ }
 
 /* ATTRIBUTES */
-<IN_TAG>{
+<IN_TAG>{ 
 	{EDITION}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
@@ -218,17 +220,17 @@ NL = \r\n|\r|\n
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.PATH; 
-		}
+		} 
 }
 
 /* SYMBOLS */
-
 <YYINITIAL, IN_CONTENT>{TAG_OPEN}
 	{
 		yybegin(IN_TAG);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.TAG_OPEN; 
 	}
+	
 <IN_TAG>{TAG_CLOSE}
 	{
 		yybegin(IN_CONTENT);
@@ -281,7 +283,7 @@ NL = \r\n|\r|\n
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.CONTENT; 
 		}
-}	
+}
 
 /* COMMENT */
 <IN_CONTENT>{COMMENT}
@@ -294,7 +296,7 @@ NL = \r\n|\r|\n
 <YYINITIAL, IN_TAG, IN_CONTENT>{
 	{NL}
 		{
-			return Parser.NL;
+			/* return Parser.NL; */
 		}
 	
 	/* whitespace */
