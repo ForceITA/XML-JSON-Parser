@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE book SYSTEM "book.dtd">
+<
+
+
+book>
+	<dedication>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam varius turpis vel tellus aliquam,
+		sit amet condimentum turpis eleifend. Vivamus lobortis lacus eu mi placerat malesuada. Nullam
+		cursus, massa vitae adipiscing tempus, orci arcu imperdiet neque, ut adipiscing dolor tortor nec
+		erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In quis
+		dui nulla. Etiam fermentum lectus vel sapien facilisis rutrum.
+	</dedication>
+</book>

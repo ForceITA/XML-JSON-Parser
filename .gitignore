@@ -1,7 +1,6 @@
 *.class
 *.java
 *.db
-in.xml
 out.json
 *.java~
 yacc.*
