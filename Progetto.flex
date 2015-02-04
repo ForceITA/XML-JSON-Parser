@@ -58,11 +58,11 @@ ATT_SEPARATOR = "="
 /* VALUES */
 /* VALUE - Usato per i valori CDATA */ 
 VALUE = \"[ a-zA-Z0-9\-\_\.]+\"
+
 ACCENT = (è|é|ò|à|ù|ç|ì)
 SYMBOLS = (\.|\,|\;|\:|\?|\^|\!|\"|\'|\$|\&|\£|\%|\(|\)|\=|\*|\[|\]|\\|\+|\-|\_|§|°|#|@)
 /* CONTENT - Usato come PCDATA - DA VERIFICARE */
 CONTENT =(({NL}|[ \t])*({ACCENT}|{SYMBOLS}|[a-zA-Z0-9])+({NL}|[ \t])*)*
-
 /* COMMENT */
 COMMENT = <\!\-\-+ ([^\-\-] | [\r\n] | (\-+ ([^\-\->] | [\r\n])) )* \-+\->[ \t]*
 
@@ -89,13 +89,12 @@ NL = \r\n|\r|\n
 		/* EMPTY */
 	}
 
-	
 /* ELEMENTS */
 <IN_TAG> {
 	{BOOK}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
-			return Parser.BOOK; 
+			return Parser.BOOK;
 		}
 
 	{DEDICATION}
@@ -187,7 +186,6 @@ NL = \r\n|\r|\n
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.NOTE; 
 		}
- 
  }
 
 /* ATTRIBUTES */
@@ -228,14 +226,14 @@ NL = \r\n|\r|\n
 	{
 		yybegin(IN_TAG);
 		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.TAG_OPEN; 
+		return Parser.TAG_OPEN;
 	}
 	
 <IN_TAG> {TAG_CLOSE}
 	{
 		yybegin(IN_CONTENT);
 		yyparser.yylval = new ParserVal(yytext()); 
-		return Parser.TAG_CLOSE; 
+		return Parser.TAG_CLOSE;
 	}
 
 <IN_CONTENT> {CLOSE_TAG_OPEN}
@@ -265,7 +263,7 @@ NL = \r\n|\r|\n
 		return Parser.VALUE; 
 	}
 	
-<IN_CONTENT> {	
+<IN_CONTENT> {
 	{ACCENT}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
@@ -291,12 +289,11 @@ NL = \r\n|\r|\n
 		/* EMPTY */
 	}
 
-
 /* SPECIAL CHARACTERS */
 <YYINITIAL, IN_TAG, IN_CONTENT> {
 	{NL}
 		{
-			/* return Parser.NL; */
+			/* EMPTY */
 		}
 	
 	/* whitespace */
@@ -314,6 +311,7 @@ NL = \r\n|\r|\n
 	/* error fallback */
 	[^] 
 		{ 
-			System.err.println("Error: unexpected character '"+yytext()+"'"); return -1; 
+			System.err.println("Error: unexpected character '" + yytext() + "'"); 
+			return -1; 
 		}
 }
