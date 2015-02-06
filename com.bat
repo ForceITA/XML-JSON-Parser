@@ -1,2 +1,2 @@
-yacc -J Progetto.y
+yacc -v -J Progetto.y
 jflex Progetto.flex

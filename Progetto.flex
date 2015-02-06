@@ -56,7 +56,7 @@ CLOSE_TAG_CLOSE = "/>"
 ATT_SEPARATOR = "="
 
 /* VALUES */
-/* VALUE - Usato per i valori CDATA */ 
+/* VALUE - Usato per i valori CDATA */
 VALUE = \"[ a-zA-Z0-9\-\_\.]+\"
 
 ACCENT = (è|é|ò|à|ù|ç|ì)

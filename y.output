@@ -1,0 +1,1489 @@
+   0  $accept : doc $end
+
+   1  doc : book
+
+   2  book : TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
+
+   3  edition :
+   4          | EDITION ATT_SEPARATOR VALUE
+
+   5  content : dedication preface parts author_notes
+   6          | preface parts author_notes
+
+   7  dedication : TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
+
+   8  pcdata : CONTENT
+
+   9  preface : TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE
+
+  10  parts : part
+  11        | part parts
+
+  12  part : TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
+  13       | TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
+
+  14  part_cont : toc chapters lof lot
+
+  15  id : ID ATT_SEPARATOR VALUE
+
+  16  title : TITLE ATT_SEPARATOR VALUE
+
+  17  toc : TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE
+
+  18  items : item
+  19        | item items
+
+  20  item : TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE
+
+  21  id_ref : ID ATT_SEPARATOR VALUE
+
+  22  chapters : chapter
+  23           | chapter chapters
+
+  24  chapter : TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE
+
+  25  sections : section
+  26           | section sections
+
+  27  section : TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE
+
+  28  section_content :
+  29                  | pcdata section_content
+  30                  | section section_content
+  31                  | figure section_content
+  32                  | table section_content
+
+  33  figure : TAG_OPEN FIGURE id caption path CLOSE_TAG_CLOSE
+
+  34  caption : CAPTION ATT_SEPARATOR VALUE
+
+  35  path : PATH ATT_SEPARATOR VALUE
+
+  36  table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE
+
+  37  rows : row
+  38       | row rows
+
+  39  row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE
+
+  40  cells : cell
+  41        | cell cells
+
+  42  cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
+
+  43  lof :
+  44      | TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
+
+  45  lot :
+  46      | TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE
+
+  47  author_notes :
+  48               | TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
+
+  49  notes : note
+  50        | note notes
+
+  51  note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
+
+state 0
+	$accept : . doc $end  (0)
+
+	TAG_OPEN  shift 1
+	.  error
+
+	doc  goto 2
+	book  goto 3
+
+
+state 1
+	book : TAG_OPEN . BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE  (2)
+
+	BOOK  shift 4
+	.  error
+
+
+state 2
+	$accept : doc . $end  (0)
+
+	$end  accept
+
+
+state 3
+	doc : book .  (1)
+
+	.  reduce 1
+
+
+state 4
+	book : TAG_OPEN BOOK . edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE  (2)
+	edition : .  (3)
+
+	EDITION  shift 5
+	TAG_CLOSE  reduce 3
+
+	edition  goto 6
+
+
+state 5
+	edition : EDITION . ATT_SEPARATOR VALUE  (4)
+
+	ATT_SEPARATOR  shift 7
+	.  error
+
+
+state 6
+	book : TAG_OPEN BOOK edition . TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE  (2)
+
+	TAG_CLOSE  shift 8
+	.  error
+
+
+state 7
+	edition : EDITION ATT_SEPARATOR . VALUE  (4)
+
+	VALUE  shift 9
+	.  error
+
+
+state 8
+	book : TAG_OPEN BOOK edition TAG_CLOSE . content CLOSE_TAG_OPEN BOOK TAG_CLOSE  (2)
+
+	TAG_OPEN  shift 10
+	.  error
+
+	content  goto 11
+	dedication  goto 12
+	preface  goto 13
+
+
+state 9
+	edition : EDITION ATT_SEPARATOR VALUE .  (4)
+
+	.  reduce 4
+
+
+state 10
+	dedication : TAG_OPEN . DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE  (7)
+	preface : TAG_OPEN . PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE  (9)
+
+	DEDICATION  shift 14
+	PREFACE  shift 15
+	.  error
+
+
+state 11
+	book : TAG_OPEN BOOK edition TAG_CLOSE content . CLOSE_TAG_OPEN BOOK TAG_CLOSE  (2)
+
+	CLOSE_TAG_OPEN  shift 16
+	.  error
+
+
+state 12
+	content : dedication . preface parts author_notes  (5)
+
+	TAG_OPEN  shift 17
+	.  error
+
+	preface  goto 18
+
+
+state 13
+	content : preface . parts author_notes  (6)
+
+	TAG_OPEN  shift 19
+	.  error
+
+	part  goto 20
+	parts  goto 21
+
+
+state 14
+	dedication : TAG_OPEN DEDICATION . TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE  (7)
+
+	TAG_CLOSE  shift 22
+	.  error
+
+
+state 15
+	preface : TAG_OPEN PREFACE . TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE  (9)
+
+	TAG_CLOSE  shift 23
+	.  error
+
+
+state 16
+	book : TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN . BOOK TAG_CLOSE  (2)
+
+	BOOK  shift 24
+	.  error
+
+
+state 17
+	preface : TAG_OPEN . PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE  (9)
+
+	PREFACE  shift 15
+	.  error
+
+
+state 18
+	content : dedication preface . parts author_notes  (5)
+
+	TAG_OPEN  shift 19
+	.  error
+
+	part  goto 20
+	parts  goto 25
+
+
+state 19
+	part : TAG_OPEN . PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+	part : TAG_OPEN . PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
+
+	PART  shift 26
+	.  error
+
+
+20: shift/reduce conflict (shift 19, reduce 10) on TAG_OPEN
+state 20
+	parts : part .  (10)
+	parts : part . parts  (11)
+
+	TAG_OPEN  shift 19
+	CLOSE_TAG_OPEN  reduce 10
+
+	part  goto 20
+	parts  goto 27
+
+
+state 21
+	content : preface parts . author_notes  (6)
+	author_notes : .  (47)
+
+	TAG_OPEN  shift 28
+	CLOSE_TAG_OPEN  reduce 47
+
+	author_notes  goto 29
+
+
+state 22
+	dedication : TAG_OPEN DEDICATION TAG_CLOSE . pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE  (7)
+
+	CONTENT  shift 30
+	.  error
+
+	pcdata  goto 31
+
+
+state 23
+	preface : TAG_OPEN PREFACE TAG_CLOSE . pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE  (9)
+
+	CONTENT  shift 30
+	.  error
+
+	pcdata  goto 32
+
+
+state 24
+	book : TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK . TAG_CLOSE  (2)
+
+	TAG_CLOSE  shift 33
+	.  error
+
+
+state 25
+	content : dedication preface parts . author_notes  (5)
+	author_notes : .  (47)
+
+	TAG_OPEN  shift 28
+	CLOSE_TAG_OPEN  reduce 47
+
+	author_notes  goto 34
+
+
+state 26
+	part : TAG_OPEN PART . id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+	part : TAG_OPEN PART . id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
+
+	ID  shift 35
+	.  error
+
+	id  goto 36
+
+
+state 27
+	parts : part parts .  (11)
+
+	.  reduce 11
+
+
+state 28
+	author_notes : TAG_OPEN . AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (48)
+
+	AUTHOR_NOTES  shift 37
+	.  error
+
+
+state 29
+	content : preface parts author_notes .  (6)
+
+	.  reduce 6
+
+
+state 30
+	pcdata : CONTENT .  (8)
+
+	.  reduce 8
+
+
+state 31
+	dedication : TAG_OPEN DEDICATION TAG_CLOSE pcdata . CLOSE_TAG_OPEN DEDICATION TAG_CLOSE  (7)
+
+	CLOSE_TAG_OPEN  shift 38
+	.  error
+
+
+state 32
+	preface : TAG_OPEN PREFACE TAG_CLOSE pcdata . CLOSE_TAG_OPEN PREFACE TAG_CLOSE  (9)
+
+	CLOSE_TAG_OPEN  shift 39
+	.  error
+
+
+state 33
+	book : TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE .  (2)
+
+	.  reduce 2
+
+
+state 34
+	content : dedication preface parts author_notes .  (5)
+
+	.  reduce 5
+
+
+state 35
+	id : ID . ATT_SEPARATOR VALUE  (15)
+
+	ATT_SEPARATOR  shift 40
+	.  error
+
+
+state 36
+	part : TAG_OPEN PART id . title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+	part : TAG_OPEN PART id . TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
+
+	TITLE  shift 41
+	TAG_CLOSE  shift 42
+	.  error
+
+	title  goto 43
+
+
+state 37
+	author_notes : TAG_OPEN AUTHOR_NOTES . TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (48)
+
+	TAG_CLOSE  shift 44
+	.  error
+
+
+state 38
+	dedication : TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN . DEDICATION TAG_CLOSE  (7)
+
+	DEDICATION  shift 45
+	.  error
+
+
+state 39
+	preface : TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN . PREFACE TAG_CLOSE  (9)
+
+	PREFACE  shift 46
+	.  error
+
+
+state 40
+	id : ID ATT_SEPARATOR . VALUE  (15)
+
+	VALUE  shift 47
+	.  error
+
+
+state 41
+	title : TITLE . ATT_SEPARATOR VALUE  (16)
+
+	ATT_SEPARATOR  shift 48
+	.  error
+
+
+state 42
+	part : TAG_OPEN PART id TAG_CLOSE . part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
+
+	TAG_OPEN  shift 49
+	.  error
+
+	toc  goto 50
+	part_cont  goto 51
+
+
+state 43
+	part : TAG_OPEN PART id title . TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+
+	TAG_CLOSE  shift 52
+	.  error
+
+
+state 44
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE . notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (48)
+
+	TAG_OPEN  shift 53
+	.  error
+
+	note  goto 54
+	notes  goto 55
+
+
+state 45
+	dedication : TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION . TAG_CLOSE  (7)
+
+	TAG_CLOSE  shift 56
+	.  error
+
+
+state 46
+	preface : TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE . TAG_CLOSE  (9)
+
+	TAG_CLOSE  shift 57
+	.  error
+
+
+state 47
+	id : ID ATT_SEPARATOR VALUE .  (15)
+
+	.  reduce 15
+
+
+state 48
+	title : TITLE ATT_SEPARATOR . VALUE  (16)
+
+	VALUE  shift 58
+	.  error
+
+
+state 49
+	toc : TAG_OPEN . TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE  (17)
+
+	TOC  shift 59
+	.  error
+
+
+state 50
+	part_cont : toc . chapters lof lot  (14)
+
+	TAG_OPEN  shift 60
+	.  error
+
+	chapter  goto 61
+	chapters  goto 62
+
+
+state 51
+	part : TAG_OPEN PART id TAG_CLOSE part_cont . CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
+
+	CLOSE_TAG_OPEN  shift 63
+	.  error
+
+
+state 52
+	part : TAG_OPEN PART id title TAG_CLOSE . part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+
+	TAG_OPEN  shift 49
+	.  error
+
+	toc  goto 50
+	part_cont  goto 64
+
+
+state 53
+	note : TAG_OPEN . NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (51)
+
+	NOTE  shift 65
+	.  error
+
+
+state 54
+	notes : note .  (49)
+	notes : note . notes  (50)
+
+	TAG_OPEN  shift 53
+	CLOSE_TAG_OPEN  reduce 49
+
+	note  goto 54
+	notes  goto 66
+
+
+state 55
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes . CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (48)
+
+	CLOSE_TAG_OPEN  shift 67
+	.  error
+
+
+state 56
+	dedication : TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE .  (7)
+
+	.  reduce 7
+
+
+state 57
+	preface : TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE .  (9)
+
+	.  reduce 9
+
+
+state 58
+	title : TITLE ATT_SEPARATOR VALUE .  (16)
+
+	.  reduce 16
+
+
+state 59
+	toc : TAG_OPEN TOC . TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE  (17)
+
+	TAG_CLOSE  shift 68
+	.  error
+
+
+state 60
+	chapter : TAG_OPEN . CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	CHAPTER  shift 69
+	.  error
+
+
+61: shift/reduce conflict (shift 60, reduce 22) on TAG_OPEN
+state 61
+	chapters : chapter .  (22)
+	chapters : chapter . chapters  (23)
+
+	TAG_OPEN  shift 60
+	CLOSE_TAG_OPEN  reduce 22
+
+	chapter  goto 61
+	chapters  goto 70
+
+
+62: shift/reduce conflict (shift 71, reduce 43) on TAG_OPEN
+state 62
+	part_cont : toc chapters . lof lot  (14)
+	lof : .  (43)
+
+	TAG_OPEN  shift 71
+	CLOSE_TAG_OPEN  reduce 43
+
+	lof  goto 72
+
+
+state 63
+	part : TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN . PART TAG_CLOSE  (13)
+
+	PART  shift 73
+	.  error
+
+
+state 64
+	part : TAG_OPEN PART id title TAG_CLOSE part_cont . CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
+
+	CLOSE_TAG_OPEN  shift 74
+	.  error
+
+
+state 65
+	note : TAG_OPEN NOTE . TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (51)
+
+	TAG_CLOSE  shift 75
+	.  error
+
+
+state 66
+	notes : note notes .  (50)
+
+	.  reduce 50
+
+
+state 67
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN . AUTHOR_NOTES TAG_CLOSE  (48)
+
+	AUTHOR_NOTES  shift 76
+	.  error
+
+
+state 68
+	toc : TAG_OPEN TOC TAG_CLOSE . items CLOSE_TAG_OPEN TOC TAG_CLOSE  (17)
+
+	TAG_OPEN  shift 77
+	.  error
+
+	item  goto 78
+	items  goto 79
+
+
+state 69
+	chapter : TAG_OPEN CHAPTER . id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	ID  shift 35
+	.  error
+
+	id  goto 80
+
+
+state 70
+	chapters : chapter chapters .  (23)
+
+	.  reduce 23
+
+
+state 71
+	lof : TAG_OPEN . LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (44)
+
+	LOF  shift 81
+	.  error
+
+
+state 72
+	part_cont : toc chapters lof . lot  (14)
+	lot : .  (45)
+
+	TAG_OPEN  shift 82
+	CLOSE_TAG_OPEN  reduce 45
+
+	lot  goto 83
+
+
+state 73
+	part : TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART . TAG_CLOSE  (13)
+
+	TAG_CLOSE  shift 84
+	.  error
+
+
+state 74
+	part : TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN . PART TAG_CLOSE  (12)
+
+	PART  shift 85
+	.  error
+
+
+state 75
+	note : TAG_OPEN NOTE TAG_CLOSE . pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (51)
+
+	CONTENT  shift 30
+	.  error
+
+	pcdata  goto 86
+
+
+state 76
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES . TAG_CLOSE  (48)
+
+	TAG_CLOSE  shift 87
+	.  error
+
+
+state 77
+	item : TAG_OPEN . ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE  (20)
+
+	ITEM  shift 88
+	.  error
+
+
+state 78
+	items : item .  (18)
+	items : item . items  (19)
+
+	TAG_OPEN  shift 77
+	CLOSE_TAG_OPEN  reduce 18
+
+	item  goto 78
+	items  goto 89
+
+
+state 79
+	toc : TAG_OPEN TOC TAG_CLOSE items . CLOSE_TAG_OPEN TOC TAG_CLOSE  (17)
+
+	CLOSE_TAG_OPEN  shift 90
+	.  error
+
+
+state 80
+	chapter : TAG_OPEN CHAPTER id . title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	TITLE  shift 41
+	.  error
+
+	title  goto 91
+
+
+state 81
+	lof : TAG_OPEN LOF . TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (44)
+
+	TAG_CLOSE  shift 92
+	.  error
+
+
+state 82
+	lot : TAG_OPEN . LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (46)
+
+	LOT  shift 93
+	.  error
+
+
+state 83
+	part_cont : toc chapters lof lot .  (14)
+
+	.  reduce 14
+
+
+state 84
+	part : TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE .  (13)
+
+	.  reduce 13
+
+
+state 85
+	part : TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART . TAG_CLOSE  (12)
+
+	TAG_CLOSE  shift 94
+	.  error
+
+
+state 86
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata . CLOSE_TAG_OPEN NOTE TAG_CLOSE  (51)
+
+	CLOSE_TAG_OPEN  shift 95
+	.  error
+
+
+state 87
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE .  (48)
+
+	.  reduce 48
+
+
+state 88
+	item : TAG_OPEN ITEM . id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE  (20)
+
+	ID  shift 96
+	.  error
+
+	id_ref  goto 97
+
+
+state 89
+	items : item items .  (19)
+
+	.  reduce 19
+
+
+state 90
+	toc : TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN . TOC TAG_CLOSE  (17)
+
+	TOC  shift 98
+	.  error
+
+
+state 91
+	chapter : TAG_OPEN CHAPTER id title . TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	TAG_CLOSE  shift 99
+	.  error
+
+
+state 92
+	lof : TAG_OPEN LOF TAG_CLOSE . items CLOSE_TAG_OPEN LOF TAG_CLOSE  (44)
+
+	TAG_OPEN  shift 77
+	.  error
+
+	item  goto 78
+	items  goto 100
+
+
+state 93
+	lot : TAG_OPEN LOT . TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (46)
+
+	TAG_CLOSE  shift 101
+	.  error
+
+
+state 94
+	part : TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE .  (12)
+
+	.  reduce 12
+
+
+state 95
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN . NOTE TAG_CLOSE  (51)
+
+	NOTE  shift 102
+	.  error
+
+
+state 96
+	id_ref : ID . ATT_SEPARATOR VALUE  (21)
+
+	ATT_SEPARATOR  shift 103
+	.  error
+
+
+state 97
+	item : TAG_OPEN ITEM id_ref . TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE  (20)
+
+	TAG_CLOSE  shift 104
+	.  error
+
+
+state 98
+	toc : TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC . TAG_CLOSE  (17)
+
+	TAG_CLOSE  shift 105
+	.  error
+
+
+state 99
+	chapter : TAG_OPEN CHAPTER id title TAG_CLOSE . sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	TAG_OPEN  shift 106
+	.  error
+
+	section  goto 107
+	sections  goto 108
+
+
+state 100
+	lof : TAG_OPEN LOF TAG_CLOSE items . CLOSE_TAG_OPEN LOF TAG_CLOSE  (44)
+
+	CLOSE_TAG_OPEN  shift 109
+	.  error
+
+
+state 101
+	lot : TAG_OPEN LOT TAG_CLOSE . items CLOSE_TAG_OPEN LOT TAG_CLOSE  (46)
+
+	TAG_OPEN  shift 77
+	.  error
+
+	item  goto 78
+	items  goto 110
+
+
+state 102
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE . TAG_CLOSE  (51)
+
+	TAG_CLOSE  shift 111
+	.  error
+
+
+state 103
+	id_ref : ID ATT_SEPARATOR . VALUE  (21)
+
+	VALUE  shift 112
+	.  error
+
+
+state 104
+	item : TAG_OPEN ITEM id_ref TAG_CLOSE . pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE  (20)
+
+	CONTENT  shift 30
+	.  error
+
+	pcdata  goto 113
+
+
+state 105
+	toc : TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE .  (17)
+
+	.  reduce 17
+
+
+state 106
+	section : TAG_OPEN . SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+
+	SECTION  shift 114
+	.  error
+
+
+state 107
+	sections : section .  (25)
+	sections : section . sections  (26)
+
+	TAG_OPEN  shift 106
+	CLOSE_TAG_OPEN  reduce 25
+
+	section  goto 107
+	sections  goto 115
+
+
+state 108
+	chapter : TAG_OPEN CHAPTER id title TAG_CLOSE sections . CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (24)
+
+	CLOSE_TAG_OPEN  shift 116
+	.  error
+
+
+state 109
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN . LOF TAG_CLOSE  (44)
+
+	LOF  shift 117
+	.  error
+
+
+state 110
+	lot : TAG_OPEN LOT TAG_CLOSE items . CLOSE_TAG_OPEN LOT TAG_CLOSE  (46)
+
+	CLOSE_TAG_OPEN  shift 118
+	.  error
+
+
+state 111
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE .  (51)
+
+	.  reduce 51
+
+
+state 112
+	id_ref : ID ATT_SEPARATOR VALUE .  (21)
+
+	.  reduce 21
+
+
+state 113
+	item : TAG_OPEN ITEM id_ref TAG_CLOSE pcdata . CLOSE_TAG_OPEN ITEM TAG_CLOSE  (20)
+
+	CLOSE_TAG_OPEN  shift 119
+	.  error
+
+
+state 114
+	section : TAG_OPEN SECTION . id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+
+	ID  shift 35
+	.  error
+
+	id  goto 120
+
+
+state 115
+	sections : section sections .  (26)
+
+	.  reduce 26
+
+
+state 116
+	chapter : TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN . CHAPTER TAG_CLOSE  (24)
+
+	CHAPTER  shift 121
+	.  error
+
+
+state 117
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF . TAG_CLOSE  (44)
+
+	TAG_CLOSE  shift 122
+	.  error
+
+
+state 118
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN . LOT TAG_CLOSE  (46)
+
+	LOT  shift 123
+	.  error
+
+
+state 119
+	item : TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN . ITEM TAG_CLOSE  (20)
+
+	ITEM  shift 124
+	.  error
+
+
+state 120
+	section : TAG_OPEN SECTION id . title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+
+	TITLE  shift 41
+	.  error
+
+	title  goto 125
+
+
+state 121
+	chapter : TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER . TAG_CLOSE  (24)
+
+	TAG_CLOSE  shift 126
+	.  error
+
+
+state 122
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE .  (44)
+
+	.  reduce 44
+
+
+state 123
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT . TAG_CLOSE  (46)
+
+	TAG_CLOSE  shift 127
+	.  error
+
+
+state 124
+	item : TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM . TAG_CLOSE  (20)
+
+	TAG_CLOSE  shift 128
+	.  error
+
+
+state 125
+	section : TAG_OPEN SECTION id title . TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+
+	TAG_CLOSE  shift 129
+	.  error
+
+
+state 126
+	chapter : TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE .  (24)
+
+	.  reduce 24
+
+
+state 127
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE .  (46)
+
+	.  reduce 46
+
+
+state 128
+	item : TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE .  (20)
+
+	.  reduce 20
+
+
+state 129
+	section : TAG_OPEN SECTION id title TAG_CLOSE . section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+	section_content : .  (28)
+
+	TAG_OPEN  shift 130
+	CONTENT  shift 30
+	CLOSE_TAG_OPEN  reduce 28
+
+	section  goto 131
+	section_content  goto 132
+	figure  goto 133
+	table  goto 134
+	pcdata  goto 135
+
+
+state 130
+	section : TAG_OPEN . SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+	figure : TAG_OPEN . FIGURE id caption path CLOSE_TAG_CLOSE  (33)
+	table : TAG_OPEN . TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	SECTION  shift 114
+	FIGURE  shift 136
+	TABLE  shift 137
+	.  error
+
+
+state 131
+	section_content : section . section_content  (30)
+	section_content : .  (28)
+
+	TAG_OPEN  shift 130
+	CONTENT  shift 30
+	CLOSE_TAG_OPEN  reduce 28
+
+	section  goto 131
+	section_content  goto 138
+	figure  goto 133
+	table  goto 134
+	pcdata  goto 135
+
+
+state 132
+	section : TAG_OPEN SECTION id title TAG_CLOSE section_content . CLOSE_TAG_OPEN SECTION TAG_CLOSE  (27)
+
+	CLOSE_TAG_OPEN  shift 139
+	.  error
+
+
+state 133
+	section_content : figure . section_content  (31)
+	section_content : .  (28)
+
+	TAG_OPEN  shift 130
+	CONTENT  shift 30
+	CLOSE_TAG_OPEN  reduce 28
+
+	section  goto 131
+	section_content  goto 140
+	figure  goto 133
+	table  goto 134
+	pcdata  goto 135
+
+
+state 134
+	section_content : table . section_content  (32)
+	section_content : .  (28)
+
+	TAG_OPEN  shift 130
+	CONTENT  shift 30
+	CLOSE_TAG_OPEN  reduce 28
+
+	section  goto 131
+	section_content  goto 141
+	figure  goto 133
+	table  goto 134
+	pcdata  goto 135
+
+
+state 135
+	section_content : pcdata . section_content  (29)
+	section_content : .  (28)
+
+	TAG_OPEN  shift 130
+	CONTENT  shift 30
+	CLOSE_TAG_OPEN  reduce 28
+
+	section  goto 131
+	section_content  goto 142
+	figure  goto 133
+	table  goto 134
+	pcdata  goto 135
+
+
+state 136
+	figure : TAG_OPEN FIGURE . id caption path CLOSE_TAG_CLOSE  (33)
+
+	ID  shift 35
+	.  error
+
+	id  goto 143
+
+
+state 137
+	table : TAG_OPEN TABLE . id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	ID  shift 35
+	.  error
+
+	id  goto 144
+
+
+state 138
+	section_content : section section_content .  (30)
+
+	.  reduce 30
+
+
+state 139
+	section : TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN . SECTION TAG_CLOSE  (27)
+
+	SECTION  shift 145
+	.  error
+
+
+state 140
+	section_content : figure section_content .  (31)
+
+	.  reduce 31
+
+
+state 141
+	section_content : table section_content .  (32)
+
+	.  reduce 32
+
+
+state 142
+	section_content : pcdata section_content .  (29)
+
+	.  reduce 29
+
+
+state 143
+	figure : TAG_OPEN FIGURE id . caption path CLOSE_TAG_CLOSE  (33)
+
+	CAPTION  shift 146
+	.  error
+
+	caption  goto 147
+
+
+state 144
+	table : TAG_OPEN TABLE id . caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	CAPTION  shift 146
+	.  error
+
+	caption  goto 148
+
+
+state 145
+	section : TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION . TAG_CLOSE  (27)
+
+	TAG_CLOSE  shift 149
+	.  error
+
+
+state 146
+	caption : CAPTION . ATT_SEPARATOR VALUE  (34)
+
+	ATT_SEPARATOR  shift 150
+	.  error
+
+
+state 147
+	figure : TAG_OPEN FIGURE id caption . path CLOSE_TAG_CLOSE  (33)
+
+	PATH  shift 151
+	.  error
+
+	path  goto 152
+
+
+state 148
+	table : TAG_OPEN TABLE id caption . TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	TAG_CLOSE  shift 153
+	.  error
+
+
+state 149
+	section : TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE .  (27)
+
+	.  reduce 27
+
+
+state 150
+	caption : CAPTION ATT_SEPARATOR . VALUE  (34)
+
+	VALUE  shift 154
+	.  error
+
+
+state 151
+	path : PATH . ATT_SEPARATOR VALUE  (35)
+
+	ATT_SEPARATOR  shift 155
+	.  error
+
+
+state 152
+	figure : TAG_OPEN FIGURE id caption path . CLOSE_TAG_CLOSE  (33)
+
+	CLOSE_TAG_CLOSE  shift 156
+	.  error
+
+
+state 153
+	table : TAG_OPEN TABLE id caption TAG_CLOSE . rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	TAG_OPEN  shift 157
+	.  error
+
+	row  goto 158
+	rows  goto 159
+
+
+state 154
+	caption : CAPTION ATT_SEPARATOR VALUE .  (34)
+
+	.  reduce 34
+
+
+state 155
+	path : PATH ATT_SEPARATOR . VALUE  (35)
+
+	VALUE  shift 160
+	.  error
+
+
+state 156
+	figure : TAG_OPEN FIGURE id caption path CLOSE_TAG_CLOSE .  (33)
+
+	.  reduce 33
+
+
+state 157
+	row : TAG_OPEN . ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (39)
+
+	ROW  shift 161
+	.  error
+
+
+state 158
+	rows : row .  (37)
+	rows : row . rows  (38)
+
+	TAG_OPEN  shift 157
+	CLOSE_TAG_OPEN  reduce 37
+
+	row  goto 158
+	rows  goto 162
+
+
+state 159
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows . CLOSE_TAG_OPEN TABLE TAG_CLOSE  (36)
+
+	CLOSE_TAG_OPEN  shift 163
+	.  error
+
+
+state 160
+	path : PATH ATT_SEPARATOR VALUE .  (35)
+
+	.  reduce 35
+
+
+state 161
+	row : TAG_OPEN ROW . TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (39)
+
+	TAG_CLOSE  shift 164
+	.  error
+
+
+state 162
+	rows : row rows .  (38)
+
+	.  reduce 38
+
+
+state 163
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN . TABLE TAG_CLOSE  (36)
+
+	TABLE  shift 165
+	.  error
+
+
+state 164
+	row : TAG_OPEN ROW TAG_CLOSE . cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (39)
+
+	TAG_OPEN  shift 166
+	.  error
+
+	cell  goto 167
+	cells  goto 168
+
+
+state 165
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE . TAG_CLOSE  (36)
+
+	TAG_CLOSE  shift 169
+	.  error
+
+
+state 166
+	cell : TAG_OPEN . CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (42)
+
+	CELL  shift 170
+	.  error
+
+
+state 167
+	cells : cell .  (40)
+	cells : cell . cells  (41)
+
+	TAG_OPEN  shift 166
+	CLOSE_TAG_OPEN  reduce 40
+
+	cell  goto 167
+	cells  goto 171
+
+
+state 168
+	row : TAG_OPEN ROW TAG_CLOSE cells . CLOSE_TAG_OPEN ROW TAG_CLOSE  (39)
+
+	CLOSE_TAG_OPEN  shift 172
+	.  error
+
+
+state 169
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE .  (36)
+
+	.  reduce 36
+
+
+state 170
+	cell : TAG_OPEN CELL . TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (42)
+
+	TAG_CLOSE  shift 173
+	.  error
+
+
+state 171
+	cells : cell cells .  (41)
+
+	.  reduce 41
+
+
+state 172
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN . ROW TAG_CLOSE  (39)
+
+	ROW  shift 174
+	.  error
+
+
+state 173
+	cell : TAG_OPEN CELL TAG_CLOSE . pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (42)
+
+	CONTENT  shift 30
+	.  error
+
+	pcdata  goto 175
+
+
+state 174
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW . TAG_CLOSE  (39)
+
+	TAG_CLOSE  shift 176
+	.  error
+
+
+state 175
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata . CLOSE_TAG_OPEN CELL TAG_CLOSE  (42)
+
+	CLOSE_TAG_OPEN  shift 177
+	.  error
+
+
+state 176
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE .  (39)
+
+	.  reduce 39
+
+
+state 177
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN . CELL TAG_CLOSE  (42)
+
+	CELL  shift 178
+	.  error
+
+
+state 178
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL . TAG_CLOSE  (42)
+
+	TAG_CLOSE  shift 179
+	.  error
+
+
+state 179
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE .  (42)
+
+	.  reduce 42
+
+
+State 20 contains 1 shift/reduce conflict.
+State 61 contains 1 shift/reduce conflict.
+State 62 contains 1 shift/reduce conflict.
+
+
+33 terminals, 35 nonterminals
+52 grammar rules, 180 states

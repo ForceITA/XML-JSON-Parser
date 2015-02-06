@@ -18,8 +18,8 @@
 %type <sval>
 	doc book content
 	dedication preface part parts author_notes note notes toc item items
-	chapter chapters section sections section_content figure 
-	table row rows cell cells lof lot part_cont
+	chapter chapters section sections section_content section_contents figure 
+	table row rows cell cells lof lot 
 	id id_ref edition pcdata title caption path
 	
 
@@ -93,21 +93,15 @@ part parts
 	};
 
 part:
-TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
+TAG_OPEN PART id title TAG_CLOSE toc chapters lof lot CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = $2 + $3 + $4 + $6; 
+		$$ = $2 + $3 + $4 + $6 + $7 + $8 + $9; 
 	}
 	|
-TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
+TAG_OPEN PART id TAG_CLOSE toc chapters lof lot CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = $2 + $3 + $5; 
+		$$ = $2 + $3 + $5 + $6 + $7 + $8; 
 	};
-	
-part_cont:
-toc chapters lof lot
-	{
-		$$ = $1 + $2 + $3 + $4;
-	};	
 	
 //implementare gestione uncita'
 id:
@@ -181,35 +175,46 @@ section sections
 	};
 	
 section:
-TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE
+TAG_OPEN SECTION id title TAG_CLOSE section_contents CLOSE_TAG_OPEN SECTION TAG_CLOSE
 	{
 		$$ = $2 + $3 + $4 + $6; 
 	};
 	
+section_contents:
+section_content
+	{
+		$$ = $1;
+	}
+	|
+section_content section_contents
+	{
+		$$ = $1 + $2;
+	}
+
 section_content:
 /* epsilon */
 	{
 		$$ = "";
 	}
 	|
-pcdata section_content
+pcdata
 	{
-		$$ = $1 + $2;
+		$$ = $1;
 	}
 	|
-section section_content
+section
 	{
-		$$ = $1 + $2;
+		$$ = $1;
 	}
 	|
-figure section_content
+figure 
 	{
-		$$ = $1 + $2;
+		$$ = $1;
 	}
 	|
-table section_content
+table 
 	{
-		$$ = $1 + $2;
+		$$ = $1;
 	};
 	
 figure:
@@ -282,7 +287,7 @@ TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
 	};
 	
 lot:
-/* epsilon */ 
+/* epsilon */
 	{
 		$$ = "";
 	}
@@ -330,7 +335,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
       yyl_return = lexer.yylex();
     }
     catch (IOException e) {
-      System.err.println("IO error :" + e);
+      System.err.println("IO error :"+e);
     }
     return yyl_return;
   }
