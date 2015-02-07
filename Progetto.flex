@@ -4,7 +4,6 @@
 %%
 
 %byaccj
-%debug
 
 %{
   private Parser yyparser;

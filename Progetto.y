@@ -19,7 +19,7 @@
 	doc book content
 	dedication preface part parts author_notes note notes toc item items
 	chapter chapters section sections section_content figure 
-	table row rows cell cells lof lot part_cont
+	table row rows cell cells lof lot part_cont lof_lot
 	id id_ref edition pcdata title caption path
 	
 
@@ -38,24 +38,29 @@ book
 book: 
 TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 	{
-		$$ = $2 + $3 + $5;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"" + 
+				$3 + System.lineSeparator() + 
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t"+ $5 + "]";
 	};
 
 edition:
 /* epsilon */
 	{
-		$$ = "";
+		$$ = ",";
 	}
 	|
 EDITION ATT_SEPARATOR VALUE
 	{
-		$$ = $1;
+		$$ =	"," + System.lineSeparator() +
+				"\t" + "\"@" + $1 + "\": " + $3 + ",";
 	};
 
 content: 
 dedication preface parts author_notes 
 	{
-		$$ = $1 + $2 + $3 + $4;
+		$$ = 	$1 + $2 + $3 + $4;
 	}
 	|
 preface parts author_notes
@@ -87,7 +92,7 @@ part
 		$$ = $1;
 	}
 	|
-part parts
+parts part
 	{
 		$$ = $1 + $2;	
 	};
@@ -104,10 +109,21 @@ TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	};
 	
 part_cont:
-toc chapters lof lot
+toc chapters lof_lot
 	{
-		$$ = $1 + $2 + $3 + $4;
-	};	
+		$$ = $1 + $2 + $3;
+	};
+	
+lof_lot:
+lof lot
+	{
+		$$ = $1 + $2;
+	}
+	|
+lot
+	{
+		$$ = $1;
+	};
 	
 //implementare gestione uncita'
 id:
@@ -134,7 +150,7 @@ item
 		$$ = $1;
 	}
 	|
-item items
+items item
 	{
 		$$ = $1 + $2;
 	};
@@ -148,8 +164,7 @@ TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE
 // implementare verifica esistenza	
 id_ref:
 ID ATT_SEPARATOR VALUE
-	{
-		$$ = $1 + $3;
+	{  $$ = $1 + $3;
 	};
 
 chapters:
@@ -158,7 +173,7 @@ chapter
 		$$ = $1;
 	}
 	|
-chapter chapters
+chapters chapter
 	{
 		$$ = $1 + $2;
 	};
@@ -175,7 +190,7 @@ section
 		$$ = $1;
 	}
 	|
-section sections
+sections section
 	{
 		$$ = $1 + $2;
 	};
@@ -242,7 +257,7 @@ row
 		$$ = $1;
 	}
 	|
-row rows
+rows row
 	{
 		$$ = $1 + $2;
 	};
@@ -259,7 +274,7 @@ cell
 		$$ = $1;
 	}
 	|
-cell cells
+cells cell
 	{
 		$$ = $1 + $2;
 	};
@@ -271,18 +286,13 @@ TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
 	};
 	
 lof:
-/* epsilon */
-	{
-		$$ = "";
-	}
-	|
 TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
 	{
 		$$ = $2 + $4;
 	};
 	
 lot:
-/* epsilon */ 
+/* epsilon */
 	{
 		$$ = "";
 	}
@@ -309,7 +319,7 @@ note
 		$$ = $1;
 	}
 	|
-note notes
+notes note
 	{
 		$$ = $1 + $2;
 	};
