@@ -1,5 +1,7 @@
 %{
   import java.io.*;
+  import java.util.HashMap;
+  import java.util.Stack;
 %}
 
 /*
@@ -32,7 +34,14 @@
 doc: 
 book
 	{
-		System.out.println(formatJSON($1));
+		String output = formatJSON($1);
+		try{
+			check();
+			System.out.print(output);
+		}
+		catch (IOException e) {
+			System.err.println("IO error :" + e);
+		}
 	};
 
 book: 
@@ -161,7 +170,12 @@ lof
 id:
 ID ATT_SEPARATOR VALUE
 	{
-		$$= 	"\"@" + $1 + "\": " + $3 + ",";
+		if(idMap.containsKey($3)){
+			yyerror("Rilevato ID doppio: " + $3);
+		}else{
+			idMap.put($3, $3);
+		}
+		$$ = 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 title:
@@ -203,10 +217,10 @@ TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE
 				"}";
 	};
 
-// implementare verifica esistenza	
 id_ref:
 ID ATT_SEPARATOR VALUE
-	{  
+	{
+		idRef.push($3);
 		$$ = 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
@@ -444,6 +458,8 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 %%
   private Yylex lexer;
   static char recordSeparator = 0x1e;
+  static HashMap idMap = new HashMap();
+  static Stack<String> idRef = new Stack();
 
   private int yylex () {
     int yyl_return = -1;
@@ -479,8 +495,17 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
     }
   }
   
+  public void check() throws IOException{
+	for(String id : idRef){
+		if(!idMap.containsKey(id))
+		{
+			throw new IOException("Riferimento inesistente" + id);
+		}
+	}
+	return;
+  }
   public String formatJSON(String input){
-String output="";
+		String output="";
 		boolean inTesto=false;
 		int indenta=0;
 		for(int i=0;i<input.length();i++)
