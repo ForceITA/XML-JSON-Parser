@@ -39,10 +39,12 @@ book:
 TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 	{
 		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"" + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"" +
 				$3 + System.lineSeparator() + 
 				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t"+ $5 + "]";
+				"\t\t" + $5 + System.lineSeparator() + 
+				"]" + System.lineSeparator() +
+				"}";
 	};
 
 edition:
@@ -65,25 +67,33 @@ dedication preface parts author_notes
 	|
 preface parts author_notes
 	{
-		$$ = $1 + $2 + $3;
+		$$ = 	$1 + $2 + $3;
 	};
 
 dedication:
 TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}," + System.lineSeparator();
 	};
 	
 pcdata:
 CONTENT
 	{
-		$$ = $1.replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ");
+		$$ = "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"";
 	};
 	
 preface:
 TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE
 	{
-		$$ = $2 + $4; 
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}," + System.lineSeparator(); 
 	};
 	
 parts:
@@ -94,18 +104,30 @@ part
 	|
 parts part
 	{
-		$$ = $1 + $2;	
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;	
 	};
 
 part:
 TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = $2 + $3 + $4 + $6; 
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() +
+				"\t" + $4 + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $6 + "]" + System.lineSeparator() +
+				"}";
 	}
 	|
 TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = $2 + $3 + $5; 
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $5 + "]" + System.lineSeparator() +
+				"}";
 	};
 	
 part_cont:
@@ -115,6 +137,11 @@ toc chapters lof_lot
 	};
 	
 lof_lot:
+/* epsilon */
+	{
+		$$ = "";
+	}
+	|
 lof lot
 	{
 		$$ = $1 + $2;
@@ -123,25 +150,34 @@ lof lot
 lot
 	{
 		$$ = $1;
+	}
+	|
+lof
+	{
+		$$ = $1;
 	};
 	
 //implementare gestione uncita'
 id:
 ID ATT_SEPARATOR VALUE
 	{
-		$$= $1 + $3;
+		$$= 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 title:
 TITLE ATT_SEPARATOR VALUE
 	{
-		$$ =  $1 + $3; 
+		$$ = 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 toc:
 TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}," + System.lineSeparator();
 	};
 
 items:
@@ -152,182 +188,257 @@ item
 	|
 items item
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() +
+				$2;
 	};
 
 item:
 TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE
 	{
-		$$ = $2 + $3 + $5;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
+				"\t" + $3 + System.lineSeparator() + 
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $5 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 // implementare verifica esistenza	
 id_ref:
 ID ATT_SEPARATOR VALUE
-	{  $$ = $1 + $3;
+	{  
+		$$ = 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 chapters:
 chapter
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 chapters chapter
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;
 	};
 
 chapter:
 TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE 
 	{
-		$$ = $2 + $3 + $4 + $6;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() +
+				"\t" + $4 + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $6 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 sections:
 section
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 sections section
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() +
+				$2;
 	};
 	
 section:
 TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE
 	{
-		$$ = $2 + $3 + $4 + $6; 
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() +
+				"\t" + $4 + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $6 + "]" + System.lineSeparator() +
+				"}";
 	};
 	
 section_content:
-/* epsilon */
+section_content pcdata
 	{
-		$$ = "";
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;
 	}
 	|
-pcdata section_content
+section_content section 
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;
 	}
 	|
-section section_content
+section_content figure 
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;
 	}
 	|
-figure section_content
+section_content table
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() + 
+				$2;
 	}
 	|
-table section_content
+pcdata
 	{
-		$$ = $1 + $2;
+		$$ = 	$1;
+	}
+	|
+section 
+	{
+		$$ = 	$1;
+	}
+	|
+figure 
+	{
+		$$ = 	$1;
+	}
+	|
+table
+	{
+		$$ = 	$1;
 	};
 	
 figure:
 TAG_OPEN FIGURE id caption path CLOSE_TAG_CLOSE
 	{
-		$$ = $2 + $3 + $4 + $5;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() +
+				"\t" + $4 + System.lineSeparator() +
+				"\t" + $5 + System.lineSeparator() + 
+				"}";
 	};
 	
 caption:
 CAPTION ATT_SEPARATOR VALUE
 	{
-		$$ = $1 + $3;
+		$$ = 	"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 path:
 PATH ATT_SEPARATOR VALUE
 	{
-		$$ = $1 + $3;
+		$$ = 	"\"@" + $1 + "\": " + $3;
 	};
 
 table:
 TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE
 	{
-		$$ = $2 + $3 + $4 + $6;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
+				"\t" + $3 + System.lineSeparator() +
+				"\t" + $4 + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $6 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 rows:
 row
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 rows row
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() +  
+				$2;
 	};
 
 row:
 TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 	
 cells:
 cell
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 cells cell
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() + $2;
 	};
 	
 cell:
 TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
 	{
-		$$ = $1 + $3;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() + 				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 	
 lof:
 TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"," + System.lineSeparator() +
+				"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 	
 lot:
-/* epsilon */
-	{
-		$$ = "";
-	}
-	|
 TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"," + System.lineSeparator() +
+				"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 author_notes:
 /* epsilon */
 	{
-		$$ = "";
+		$$ = 	"";
 	}
 	|
 TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"," + System.lineSeparator() +
+				"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +			
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 notes:
 note
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 notes note
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + "," + System.lineSeparator() +
+				$2;
 	};
 	
 note:
 TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 	{
-		$$ = $2 + $4;
+		$$ = 	"{" + System.lineSeparator() + 
+				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +			
+				"\t" + "\"content\": [" + System.lineSeparator() +
+				"\t\t" + $4 + "]" + System.lineSeparator() +
+				"}";
 	};
 
 %%
