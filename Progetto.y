@@ -32,18 +32,18 @@
 doc: 
 book
 	{
-		System.out.println($1);
+		System.out.println(formatJSON($1));
 	};
 
 book: 
 TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"" +
-				$3 + System.lineSeparator() + 
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $5 + System.lineSeparator() + 
-				"]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"" +
+				$3 +
+				"\"content\": [" +
+				$5 +
+				"]" +
 				"}";
 	};
 
@@ -55,8 +55,8 @@ edition:
 	|
 EDITION ATT_SEPARATOR VALUE
 	{
-		$$ =	"," + System.lineSeparator() +
-				"\t" + "\"@" + $1 + "\": " + $3 + ",";
+		$$ =	"," +
+				"\"@" + $1 + "\": " + $3 + ",";
 	};
 
 content: 
@@ -73,27 +73,27 @@ preface parts author_notes
 dedication:
 TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
-				"}," + System.lineSeparator();
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				"\"content\": [" +
+				$4 + "]" +
+				"},";
 	};
 	
 pcdata:
 CONTENT
 	{
-		$$ = "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"";
+		$$ = recordSeparator + "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"" + recordSeparator;
 	};
 	
 preface:
 TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
-				"}," + System.lineSeparator(); 
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				"\"content\": [" +
+				$4 + "]" +
+				"},"; 
 	};
 	
 parts:
@@ -104,29 +104,29 @@ part
 	|
 parts part
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;	
 	};
 
 part:
 TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() +
-				"\t" + $4 + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $6 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +
+				$4 +				
+				"\"content\": [" +
+				$6 + "]" +
 				"}";
 	}
 	|
 TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $5 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +				
+				"\"content\": [" +
+				$5 + "]" +
 				"}";
 	};
 	
@@ -173,11 +173,11 @@ TITLE ATT_SEPARATOR VALUE
 toc:
 TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
-				"}," + System.lineSeparator();
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				"\"content\": [" +
+				$4 + "]" +
+				"},";
 	};
 
 items:
@@ -188,18 +188,18 @@ item
 	|
 items item
 	{
-		$$ = 	$1 + "," + System.lineSeparator() +
+		$$ = 	$1 + "," +
 				$2;
 	};
 
 item:
 TAG_OPEN ITEM id_ref TAG_CLOSE pcdata CLOSE_TAG_OPEN ITEM TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
-				"\t" + $3 + System.lineSeparator() + 
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $5 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +				
+				$3 +
+				"\"content\": [" +
+				$5 + "]" +
 				"}";
 	};
 
@@ -218,19 +218,19 @@ chapter
 	|
 chapters chapter
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;
 	};
 
 chapter:
 TAG_OPEN CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE 
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() +
-				"\t" + $4 + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $6 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +
+				$4 +				
+				"\"content\": [" +
+				$6 + "]" +
 				"}";
 	};
 
@@ -242,44 +242,44 @@ section
 	|
 sections section
 	{
-		$$ = 	$1 + "," + System.lineSeparator() +
+		$$ = 	$1 + "," +
 				$2;
 	};
 	
 section:
 TAG_OPEN SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() +
-				"\t" + $4 + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $6 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +
+				$4 +				
+				"\"content\": [" +
+				$6 + "]" +
 				"}";
 	};
 	
 section_content:
 section_content pcdata
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;
 	}
 	|
 section_content section 
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;
 	}
 	|
 section_content figure 
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;
 	}
 	|
 section_content table
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
+		$$ = 	$1 + "," +
 				$2;
 	}
 	|
@@ -306,11 +306,11 @@ table
 figure:
 TAG_OPEN FIGURE id caption path CLOSE_TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() +
-				"\t" + $4 + System.lineSeparator() +
-				"\t" + $5 + System.lineSeparator() + 
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +
+				$4 +
+				$5 +
 				"}";
 	};
 	
@@ -329,12 +329,12 @@ PATH ATT_SEPARATOR VALUE
 table:
 TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t" + $3 + System.lineSeparator() +
-				"\t" + $4 + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $6 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +
+				$3 +
+				$4 +				
+				"\"content\": [" +
+				$6 + "]" +
 				"}";
 	};
 
@@ -346,17 +346,17 @@ row
 	|
 rows row
 	{
-		$$ = 	$1 + "," + System.lineSeparator() +  
+		$$ = 	$1 + "," + 
 				$2;
 	};
 
 row:
 TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +				
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 	
@@ -368,38 +368,38 @@ cell
 	|
 cells cell
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + $2;
+		$$ = 	$1 + "," +$2;
 	};
 	
 cell:
 TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() + 				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +				
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 	
 lof:
 TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
 	{
-		$$ = 	"," + System.lineSeparator() +
-				"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"," +
+				"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +				
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 	
 lot:
 TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE
 	{
-		$$ = 	"," + System.lineSeparator() +
-				"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +				
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"," +
+				"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +				
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 
@@ -411,11 +411,11 @@ author_notes:
 	|
 TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
 	{
-		$$ = 	"," + System.lineSeparator() +
-				"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +			
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"," +
+				"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +			
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 
@@ -427,22 +427,23 @@ note
 	|
 notes note
 	{
-		$$ = 	$1 + "," + System.lineSeparator() +
+		$$ = 	$1 + "," +
 				$2;
 	};
 	
 note:
 TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +			
-				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t" + $4 + "]" + System.lineSeparator() +
+		$$ = 	"{" +
+				"\"tag\": " + "\"" + $2 + "\"," +			
+				"\"content\": [" +
+				$4 + "]" +
 				"}";
 	};
 
 %%
   private Yylex lexer;
+  static char recordSeparator = 0x1e;
 
   private int yylex () {
     int yyl_return = -1;
@@ -476,4 +477,86 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
     else {
       System.out.println("ERROR: Provide an input file as Parser argument");
     }
+  }
+  
+  public String formatJSON(String input){
+String output="";
+		boolean inTesto=false;
+		int indenta=0;
+		for(int i=0;i<input.length();i++)
+		{
+			if(input.charAt(i)!=30)
+				output += input.charAt(i);
+			switch(input.charAt(i))
+			{
+				case '"':
+					if(!inTesto)
+					{
+						if(i<(input.length()-1))
+							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+							{
+								indenta--;
+								output += "\r\n";
+								for(int j=0;j<indenta;j++)
+									output += "\t";
+							}
+					}
+					break;
+				case ',':
+					if(!inTesto)
+					{
+						output += "\r\n";
+						for(int j=0;j<indenta;j++)
+							output += "\t";
+					}
+					break;
+				case '{':
+				case '[':
+					if(!inTesto)
+					{
+						indenta++;
+						output += "\r\n";
+						for(int j=0;j<indenta;j++)
+							output += "\t";
+					}
+					break;
+				case ']':
+				case '}':
+					if(!inTesto)
+					{	
+						if(i<(input.length()-1))
+							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+									indenta--;
+						if(i<(input.length()-1))
+							if(input.charAt(i+1) != ',')
+							{
+								output += "\r\n";
+								for(int j=0;j<indenta;j++)
+									output += "\t";
+							}
+					}
+					break;
+				case 30:
+					if(inTesto)
+					{
+						if(i<(input.length()-1))
+							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+							{
+								indenta--;
+								output += "\r\n";
+								for(int j=0;j<indenta;j++)
+									output += "\t";
+							}	
+					}
+					inTesto=!inTesto;
+					break;
+			}
+			if(inTesto && input.charAt(i)==(char)10)
+			{							
+				for(int j=0;j<indenta;j++)
+					output += "\t";
+			}
+			
+		}
+		return output;
   }
