@@ -32,7 +32,7 @@
 doc: 
 book
 	{
-		System.out.print($1);
+		System.out.println($1);
 	};
 
 book: 
@@ -42,9 +42,7 @@ TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 				"\t" + "\"tag\": " + "\"" + $2 + "\"" + 
 				$3 + System.lineSeparator() + 
 				"\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t"+ $5 + System.lineSeparator() +
-				"\t" + "]" + System.lineSeparator() +
-				"}";
+				"\t\t"+ $5 + "]";
 	};
 
 edition:
@@ -62,86 +60,58 @@ EDITION ATT_SEPARATOR VALUE
 content: 
 dedication preface parts author_notes 
 	{
-		$$ = 	$1 + 
-				"\t\t" + $2 + 
-				$3 + $4;
+		$$ = 	$1 + $2 + $3 + $4;
 	}
 	|
 preface parts author_notes
 	{
-		$$ = 	$1 + $2 + $3;
+		$$ = $1 + $2 + $3;
 	};
 
 dedication:
 TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
 	{
-		$$ =	"{" + System.lineSeparator() + 
-				"\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t" + "\"" + $4 + "\"" + System.lineSeparator() +
-				"\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t"+ "}," + "\n";
+		$$ = $2 + $4;
 	};
 	
 pcdata:
 CONTENT
 	{
-		$$ = $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ");
+		$$ = $1.replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ");
 	};
 	
 preface:
 TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t" + "\"" + $4 + "\"" + System.lineSeparator() +
-				"\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t"+ "}," + System.lineSeparator(); 
+		$$ = $2 + $4; 
 	};
 	
 parts:
 part 
 	{
-		$$ = 	"\t\t" + $1;
+		$$ = $1;
 	}
 	|
 parts part
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
-				"\t\t" + $2 + "," +System.lineSeparator();	
+		$$ = $1 + $2;	
 	};
 
 part:
 TAG_OPEN PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t\t\t" + $3 + System.lineSeparator() +
-				"\t\t\t" + $4 + System.lineSeparator() +
-				"\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t" +  $6  + System.lineSeparator() +
-				"\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t" + "}"; 
+		$$ = $2 + $3 + $4 + $6; 
 	}
 	|
 TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t\t\t" + $3 + System.lineSeparator() +
-				"\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t" + $5 + System.lineSeparator() +
-				"\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t"+ "}"; 
+		$$ = $2 + $3 + $5; 
 	};
 	
 part_cont:
 toc chapters lof_lot
 	{
-		$$ = 	$1 + "," + System.lineSeparator() + 
-				"\t\t\t\t" + $2 + 
-				$3;
+		$$ = $1 + $2 + $3;
 	};
 	
 lof_lot:
@@ -159,24 +129,19 @@ lot
 id:
 ID ATT_SEPARATOR VALUE
 	{
-		$$= 	"\"@" + $1 + "\": " + $3 + ",";
+		$$= $1 + $3;
 	};
 
 title:
 TITLE ATT_SEPARATOR VALUE
 	{
-		$$= 	"\"@" + $1 + "\": " + $3 + ",";
+		$$ =  $1 + $3; 
 	};
 
 toc:
 TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE
 	{
-		$$ = 	"{" + System.lineSeparator() + 
-				"\t\t\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() + 
-				"\t\t\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t\t\t" +  $4  + System.lineSeparator() +
-				"\t\t\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t\t\t" + "}"; 
+		$$ = $2 + $4;
 	};
 
 items:
@@ -345,12 +310,7 @@ author_notes:
 	|
 TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
 	{
-		$$ = 	"\t\t" + "{" + System.lineSeparator() + 
-				"\t\t\t" + "\"tag\": " + "\"" + $2 + "\"," + System.lineSeparator() +
-				"\t\t\t" + "\"content\": [" + System.lineSeparator() +
-				"\t\t\t\t" + $4 + System.lineSeparator() +
-				"\t\t\t" + "]" + System.lineSeparator() +
-				"\t\t"+ "}"; 
+		$$ = $2 + $4;
 	};
 
 notes:
