@@ -10,6 +10,7 @@
 */
 
 %token <sval> 
+	INTRO_XML INTRO_DOC
 	BOOK DEDICATION PREFACE PART TOC LOF LOT ITEM CHAPTER 
 	SECTION FIGURE TABLE ROW CELL AUTHOR_NOTES NOTE
 	EDITION ID TITLE CAPTION PATH
@@ -23,7 +24,6 @@
 	chapter chapters section sections section_content figure 
 	table row rows cell cells lof lot part_cont lof_lot
 	id id_ref edition pcdata title caption path
-	
 
 %%
 
@@ -31,10 +31,10 @@
 	Produzioni
 */
 
-doc: 
-book
+doc:
+INTRO_XML INTRO_DOC book
 	{
-		String output = formatJSON($1);
+		String output = formatJSON($3);
 		try{
 			check();
 			System.out.print(output);
@@ -59,7 +59,7 @@ TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 edition:
 /* epsilon */
 	{
-		$$ = ",";
+		$$ = 	",";
 	}
 	|
 EDITION ATT_SEPARATOR VALUE
@@ -92,7 +92,7 @@ TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
 pcdata:
 CONTENT
 	{
-		$$ = recordSeparator + "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"" + recordSeparator;
+		$$ = 	recordSeparator + "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"" + recordSeparator;
 	};
 	
 preface:
@@ -108,7 +108,7 @@ TAG_OPEN PREFACE TAG_CLOSE pcdata CLOSE_TAG_OPEN PREFACE TAG_CLOSE
 parts:
 part 
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 parts part
@@ -142,31 +142,30 @@ TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 part_cont:
 toc chapters lof_lot
 	{
-		$$ = $1 + $2 + $3;
+		$$ = 	$1 + $2 + $3;
 	};
 	
 lof_lot:
 /* epsilon */
 	{
-		$$ = "";
+		$$ = 	"";
 	}
 	|
 lof lot
 	{
-		$$ = $1 + $2;
+		$$ = 	$1 + $2;
 	}
 	|
 lot
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 lof
 	{
-		$$ = $1;
+		$$ = 	$1;
 	};
 	
-//implementare gestione uncita'
 id:
 ID ATT_SEPARATOR VALUE
 	{
@@ -197,7 +196,7 @@ TAG_OPEN TOC TAG_CLOSE items CLOSE_TAG_OPEN TOC TAG_CLOSE
 items:
 item
 	{
-		$$ = $1;
+		$$ = 	$1;
 	}
 	|
 items item
@@ -458,8 +457,8 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 %%
   private Yylex lexer;
   static char recordSeparator = 0x1e;
-  static HashMap idMap = new HashMap();
-  static Stack<String> idRef = new Stack();
+  static HashMap<String, String> idMap = new HashMap<String, String>();
+  static Stack<String> idRef = new Stack<String>();
 
   private int yylex () {
     int yyl_return = -1;
@@ -489,8 +488,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
       // Parse a file
       yyparser = new Parser(new FileReader(args[0]));
       yyparser.yyparse();
-    }
-    else {
+    } else {
       System.out.println("ERROR: Provide an input file as Parser argument");
     }
   }
@@ -504,25 +502,26 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 	}
 	return;
   }
+  
   public String formatJSON(String input){
-		String output="";
-		boolean inTesto=false;
-		int indenta=0;
-		for(int i=0;i<input.length();i++)
+		String output = "";
+		boolean inTesto = false;
+		int indenta = 0;
+		for(int i=0; i < input.length(); i++)
 		{
-			if(input.charAt(i)!=30)
+			if(input.charAt(i) != 30)
 				output += input.charAt(i);
 			switch(input.charAt(i))
 			{
 				case '"':
 					if(!inTesto)
 					{
-						if(i<(input.length()-1))
-							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+						if(i < (input.length() - 1))
+							if(input.charAt(i + 1) == '}' || input.charAt(i + 1) == ']')
 							{
 								indenta--;
 								output += "\r\n";
-								for(int j=0;j<indenta;j++)
+								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}
 					}
@@ -531,7 +530,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 					if(!inTesto)
 					{
 						output += "\r\n";
-						for(int j=0;j<indenta;j++)
+						for(int j = 0; j < indenta; j++)
 							output += "\t";
 					}
 					break;
@@ -541,7 +540,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 					{
 						indenta++;
 						output += "\r\n";
-						for(int j=0;j<indenta;j++)
+						for(int j = 0; j < indenta; j++)
 							output += "\t";
 					}
 					break;
@@ -549,14 +548,14 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 				case '}':
 					if(!inTesto)
 					{	
-						if(i<(input.length()-1))
-							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+						if(i < (input.length() - 1))
+							if(input.charAt(i + 1) == '}' || input.charAt(i + 1) == ']')
 									indenta--;
-						if(i<(input.length()-1))
-							if(input.charAt(i+1) != ',')
+						if(i < (input.length() - 1))
+							if(input.charAt(i + 1) != ',')
 							{
 								output += "\r\n";
-								for(int j=0;j<indenta;j++)
+								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}
 					}
@@ -564,21 +563,21 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 				case 30:
 					if(inTesto)
 					{
-						if(i<(input.length()-1))
-							if(input.charAt(i+1)=='}'||input.charAt(i+1)==']')
+						if(i<(input.length() - 1))
+							if(input.charAt(i + 1) == '}' || input.charAt(i+1) == ']')
 							{
 								indenta--;
 								output += "\r\n";
-								for(int j=0;j<indenta;j++)
+								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}	
 					}
-					inTesto=!inTesto;
+					inTesto = !inTesto;
 					break;
 			}
-			if(inTesto && input.charAt(i)==(char)10)
+			if(inTesto && input.charAt(i) == (char)10)
 			{							
-				for(int j=0;j<indenta;j++)
+				for(int j = 0; j < indenta; j++)
 					output += "\t";
 			}
 			

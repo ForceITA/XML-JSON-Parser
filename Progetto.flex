@@ -80,12 +80,14 @@ NL = \r\n|\r|\n
 /* HEADERS */
 {INTRO_XML}
 	{
-		/* EMPTY */
+		yyparser.yylval = new ParserVal(yytext()); 
+		return Parser.INTRO_XML;
 	}
 
 {INTRO_DOC}
 	{
-		/* EMPTY */
+		yyparser.yylval = new ParserVal(yytext()); 
+		return Parser.INTRO_DOC;
 	}
 
 /* ELEMENTS */
