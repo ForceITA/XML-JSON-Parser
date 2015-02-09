@@ -124,12 +124,27 @@ lof
 	};
 
 id:
-ID ATT_SEPARATOR VALUE
+ID ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = "BOH " + $1;
+		$$ = "BOH " + $1 + $3;
 	};
 
+title:
+OBJ_OPEN TAG ATT_SEPARATOR TOC COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN items ARRAY_CLOSE OBJ_CLOSE COMMA
+	{
+		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+	};
 
+items:
+item
+	{
+		$$ = $1;
+	}
+	|
+items COMMA item 
+	{
+		$$ = $1 + 
+	}
 %%
   private Yylex lexer;
 
