@@ -1,2 +1,2 @@
 javac *.java
-java Parser in.xml > out.json
+java Parser in.json > out.xml

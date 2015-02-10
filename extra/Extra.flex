@@ -19,30 +19,31 @@
 */
 
 /* ELEMENTS */
-TAG = "\"tag"\"
 BOOK = "\"book\""
-DEDICATION = "dedication"
-PREFACE = "preface"
-PART = "part"
-TOC = "toc"
-LOF = "lof"
-LOT = "lot"
-ITEM = "item"
-CHAPTER = "chapter"
-SECTION = "section"
-FIGURE = "figure"
-TABLE = "table"
-ROW = "row"
-CELL = "cell"
-AUTHOR_NOTES = "authornotes"
-NOTE = "note"
+DEDICATION = "\"dedication\""
+PREFACE = "\"preface\""
+PART = "\"part\""
+TOC = "\"toc\""
+LOF = "\"lof\""
+LOT = "\"lot\""
+ITEM = "\"item\""
+CHAPTER = "\"chapter\""
+SECTION = "\"section\""
+FIGURE = "\"figure\""
+TABLE = "\"table\""
+ROW = "\"row\""
+CELL = "\"cell\""
+AUTHOR_NOTES = "\"authornotes\""
+NOTE = "\"note\""
+TAG = "\"tag\""
+CONTENT = "\"content\""
 
 /* ATTRIBUTES */
-EDITION = "edition"
-ID = "@id"
-TITLE = "title"
-CAPTION = "caption"
-PATH = "path"
+EDITION = "\"@edition\""
+ID = "\"@id\""
+TITLE = "\"@title\""
+CAPTION = "\"@caption\""
+PATH = "\"@path\""
 
 /* SYMBOLS */
 OBJ_OPEN = "{"
@@ -54,20 +55,19 @@ COMMA = ","
 
 /* VALUES */
 /* VALUE - Usato per i valori CDATA */
-VALUE = \"[ a-zA-Z0-9\-\_\.]+\"
+VALUE = \"[ a-zA-Z0-9\-\_\.]*\"
 
 ACCENT = (è|é|ò|à|ù|ç|ì)
-SYMBOLS = (\.|\,|\;|\:|\?|\^|\!|\"|\'|\$|\&|\£|\%|\(|\)|\=|\*|\[|\]|\\|\+|\-|\_|§|°|#|@)
+SYMBOLS = (\,|\.|\;|\:|\?|\^|\!|\'|\"|\$|\&|\£|\%|\(|\)|\=|\*|\\|\+|\-|\_|§|°|#|@)
 /* CONTENT - Usato come PCDATA - DA VERIFICARE */
-CONTENT =(({NL}|[ \t])*({ACCENT}|{SYMBOLS}|[a-zA-Z0-9])+({NL}|[ \t])*)*
-/* COMMENT */
-COMMENT = <\!\-\-+ ([^\-\-] | [\r\n] | (\-+ ([^\-\->] | [\r\n])) )* \-+\->[ \t]*
+PCDATA = \"([ \t]*({ACCENT}|{SYMBOLS}|[a-zA-Z0-9])+[ \t]*)*\"
 
 /* SPECIAL CHARACTERS */
 NL = \r\n|\r|\n
 
 /* START CONDITIONS */
-%x IN_TAG IN_ARRAY
+%x IN_OBJ IN_ARRAY
+
 
 %%
 
@@ -76,7 +76,7 @@ NL = \r\n|\r|\n
 */
 
 /* ELEMENTS */
-<IN_TAG> {
+<IN_OBJ> {
 	{TAG}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
@@ -177,10 +177,16 @@ NL = \r\n|\r|\n
 			yyparser.yylval = new ParserVal(yytext()); 
 			return Parser.NOTE; 
 		}
+	
+	{CONTENT}
+		{
+			yyparser.yylval = new ParserVal(yytext()); 
+			return Parser.CONTENT; 
+		}
  }
 
 /* ATTRIBUTES */
-<IN_TAG> { 
+<IN_OBJ> { 
 	{EDITION}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
@@ -215,7 +221,7 @@ NL = \r\n|\r|\n
 /* SYMBOLS */
 <YYINITIAL, IN_ARRAY> {OBJ_OPEN}
 	{
-		yybegin(IN_TAG);
+		yybegin(IN_OBJ);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.OBJ_OPEN;
 	}
@@ -227,16 +233,16 @@ NL = \r\n|\r|\n
 		return Parser.OBJ_CLOSE;
 	}
 
-<IN_ARRAY> {ARRAY_OPEN}
+<IN_OBJ> {ARRAY_OPEN}
 	{
-		yybegin(IN_OBJ);
+		yybegin(IN_ARRAY);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.ARRAY_OPEN; 
 	}
 	
-<IN_OBJ> {ARRAY_CLOSE}
+<IN_ARRAY> {ARRAY_CLOSE}
 	{
-		yybegin(IN_ARRAY);
+		yybegin(IN_OBJ);
 		yyparser.yylval = new ParserVal(yytext()); 
 		return Parser.ARRAY_CLOSE; 
 	}
@@ -271,18 +277,12 @@ NL = \r\n|\r|\n
 			return Parser.SYMBOLS; 
 		}
 
-	{CONTENT}
+	{PCDATA}
 		{
 			yyparser.yylval = new ParserVal(yytext()); 
-			return Parser.CONTENT; 
+			return Parser.PCDATA; 
 		}
 }
-
-/* COMMENT */
-<IN_ARRAY> {COMMENT}
-	{
-		/* EMPTY */
-	}
 
 /* SPECIAL CHARACTERS */
 <YYINITIAL, IN_OBJ, IN_ARRAY> {

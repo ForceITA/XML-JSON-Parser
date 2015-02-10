@@ -65,31 +65,32 @@
 
   41  caption : CAPTION ATT_SEPARATOR VALUE
 
-  42  path : PATH ATT_SEPARATOR VALUE
+  42  path :
+  43       | PATH ATT_SEPARATOR VALUE
 
-  43  table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE
+  44  table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE
 
-  44  rows : row
-  45       | rows row
+  45  rows : row
+  46       | rows row
 
-  46  row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE
+  47  row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE
 
-  47  cells : cell
-  48        | cells cell
+  48  cells : cell
+  49        | cells cell
 
-  49  cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
+  50  cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE
 
-  50  lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
+  51  lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE
 
-  51  lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE
+  52  lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE
 
-  52  author_notes :
-  53               | TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
+  53  author_notes :
+  54               | TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE
 
-  54  notes : note
-  55        | notes note
+  55  notes : note
+  56        | notes note
 
-  56  note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
+  57  note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 
 state 0
 	$accept : . doc $end  (0)
@@ -273,10 +274,10 @@ state 22
 state 23
 	content : preface parts . author_notes  (6)
 	parts : parts . part  (11)
-	author_notes : .  (52)
+	author_notes : .  (53)
 
 	TAG_OPEN  shift 29
-	CLOSE_TAG_OPEN  reduce 52
+	CLOSE_TAG_OPEN  reduce 53
 
 	part  goto 30
 	author_notes  goto 31
@@ -310,10 +311,10 @@ state 26
 state 27
 	content : dedication preface parts . author_notes  (5)
 	parts : parts . part  (11)
-	author_notes : .  (52)
+	author_notes : .  (53)
 
 	TAG_OPEN  shift 29
-	CLOSE_TAG_OPEN  reduce 52
+	CLOSE_TAG_OPEN  reduce 53
 
 	part  goto 30
 	author_notes  goto 36
@@ -332,7 +333,7 @@ state 28
 state 29
 	part : TAG_OPEN . PART id title TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (12)
 	part : TAG_OPEN . PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE  (13)
-	author_notes : TAG_OPEN . AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (53)
+	author_notes : TAG_OPEN . AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (54)
 
 	PART  shift 28
 	AUTHOR_NOTES  shift 39
@@ -402,7 +403,7 @@ state 38
 
 
 state 39
-	author_notes : TAG_OPEN AUTHOR_NOTES . TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (53)
+	author_notes : TAG_OPEN AUTHOR_NOTES . TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (54)
 
 	TAG_CLOSE  shift 46
 	.  error
@@ -454,7 +455,7 @@ state 45
 
 
 state 46
-	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE . notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (53)
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE . notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (54)
 
 	TAG_OPEN  shift 55
 	.  error
@@ -525,21 +526,21 @@ state 54
 
 
 state 55
-	note : TAG_OPEN . NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (56)
+	note : TAG_OPEN . NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (57)
 
 	NOTE  shift 67
 	.  error
 
 
 state 56
-	notes : note .  (54)
+	notes : note .  (55)
 
-	.  reduce 54
+	.  reduce 55
 
 
 state 57
-	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes . CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (53)
-	notes : notes . note  (55)
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes . CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE  (54)
+	notes : notes . note  (56)
 
 	TAG_OPEN  shift 55
 	CLOSE_TAG_OPEN  shift 68
@@ -615,23 +616,23 @@ state 66
 
 
 state 67
-	note : TAG_OPEN NOTE . TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (56)
+	note : TAG_OPEN NOTE . TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (57)
 
 	TAG_CLOSE  shift 79
 	.  error
 
 
 state 68
-	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN . AUTHOR_NOTES TAG_CLOSE  (53)
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN . AUTHOR_NOTES TAG_CLOSE  (54)
 
 	AUTHOR_NOTES  shift 80
 	.  error
 
 
 state 69
-	notes : notes note .  (55)
+	notes : notes note .  (56)
 
-	.  reduce 55
+	.  reduce 56
 
 
 state 70
@@ -655,8 +656,8 @@ state 71
 
 state 72
 	chapter : TAG_OPEN . CHAPTER id title TAG_CLOSE sections CLOSE_TAG_OPEN CHAPTER TAG_CLOSE  (28)
-	lof : TAG_OPEN . LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (50)
-	lot : TAG_OPEN . LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (51)
+	lof : TAG_OPEN . LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (51)
+	lot : TAG_OPEN . LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (52)
 
 	LOF  shift 85
 	LOT  shift 86
@@ -707,7 +708,7 @@ state 78
 
 
 state 79
-	note : TAG_OPEN NOTE TAG_CLOSE . pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (56)
+	note : TAG_OPEN NOTE TAG_CLOSE . pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE  (57)
 
 	CONTENT  shift 32
 	.  error
@@ -716,7 +717,7 @@ state 79
 
 
 state 80
-	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES . TAG_CLOSE  (53)
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES . TAG_CLOSE  (54)
 
 	TAG_CLOSE  shift 92
 	.  error
@@ -756,21 +757,21 @@ state 84
 
 
 state 85
-	lof : TAG_OPEN LOF . TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (50)
+	lof : TAG_OPEN LOF . TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE  (51)
 
 	TAG_CLOSE  shift 97
 	.  error
 
 
 state 86
-	lot : TAG_OPEN LOT . TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (51)
+	lot : TAG_OPEN LOT . TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (52)
 
 	TAG_CLOSE  shift 98
 	.  error
 
 
 state 87
-	lot : TAG_OPEN . LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (51)
+	lot : TAG_OPEN . LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE  (52)
 
 	LOT  shift 86
 	.  error
@@ -796,16 +797,16 @@ state 90
 
 
 state 91
-	note : TAG_OPEN NOTE TAG_CLOSE pcdata . CLOSE_TAG_OPEN NOTE TAG_CLOSE  (56)
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata . CLOSE_TAG_OPEN NOTE TAG_CLOSE  (57)
 
 	CLOSE_TAG_OPEN  shift 100
 	.  error
 
 
 state 92
-	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE .  (53)
+	author_notes : TAG_OPEN AUTHOR_NOTES TAG_CLOSE notes CLOSE_TAG_OPEN AUTHOR_NOTES TAG_CLOSE .  (54)
 
-	.  reduce 53
+	.  reduce 54
 
 
 state 93
@@ -838,7 +839,7 @@ state 96
 
 
 state 97
-	lof : TAG_OPEN LOF TAG_CLOSE . items CLOSE_TAG_OPEN LOF TAG_CLOSE  (50)
+	lof : TAG_OPEN LOF TAG_CLOSE . items CLOSE_TAG_OPEN LOF TAG_CLOSE  (51)
 
 	TAG_OPEN  shift 81
 	.  error
@@ -848,7 +849,7 @@ state 97
 
 
 state 98
-	lot : TAG_OPEN LOT TAG_CLOSE . items CLOSE_TAG_OPEN LOT TAG_CLOSE  (51)
+	lot : TAG_OPEN LOT TAG_CLOSE . items CLOSE_TAG_OPEN LOT TAG_CLOSE  (52)
 
 	TAG_OPEN  shift 81
 	.  error
@@ -864,7 +865,7 @@ state 99
 
 
 state 100
-	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN . NOTE TAG_CLOSE  (56)
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN . NOTE TAG_CLOSE  (57)
 
 	NOTE  shift 107
 	.  error
@@ -903,7 +904,7 @@ state 104
 
 state 105
 	items : items . item  (23)
-	lof : TAG_OPEN LOF TAG_CLOSE items . CLOSE_TAG_OPEN LOF TAG_CLOSE  (50)
+	lof : TAG_OPEN LOF TAG_CLOSE items . CLOSE_TAG_OPEN LOF TAG_CLOSE  (51)
 
 	TAG_OPEN  shift 81
 	CLOSE_TAG_OPEN  shift 114
@@ -914,7 +915,7 @@ state 105
 
 state 106
 	items : items . item  (23)
-	lot : TAG_OPEN LOT TAG_CLOSE items . CLOSE_TAG_OPEN LOT TAG_CLOSE  (51)
+	lot : TAG_OPEN LOT TAG_CLOSE items . CLOSE_TAG_OPEN LOT TAG_CLOSE  (52)
 
 	TAG_OPEN  shift 81
 	CLOSE_TAG_OPEN  shift 115
@@ -924,7 +925,7 @@ state 106
 
 
 state 107
-	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE . TAG_CLOSE  (56)
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE . TAG_CLOSE  (57)
 
 	TAG_CLOSE  shift 116
 	.  error
@@ -977,23 +978,23 @@ state 113
 
 
 state 114
-	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN . LOF TAG_CLOSE  (50)
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN . LOF TAG_CLOSE  (51)
 
 	LOF  shift 122
 	.  error
 
 
 state 115
-	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN . LOT TAG_CLOSE  (51)
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN . LOT TAG_CLOSE  (52)
 
 	LOT  shift 123
 	.  error
 
 
 state 116
-	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE .  (56)
+	note : TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE .  (57)
 
-	.  reduce 56
+	.  reduce 57
 
 
 state 117
@@ -1032,14 +1033,14 @@ state 121
 
 
 state 122
-	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF . TAG_CLOSE  (50)
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF . TAG_CLOSE  (51)
 
 	TAG_CLOSE  shift 127
 	.  error
 
 
 state 123
-	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT . TAG_CLOSE  (51)
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT . TAG_CLOSE  (52)
 
 	TAG_CLOSE  shift 128
 	.  error
@@ -1069,15 +1070,15 @@ state 126
 
 
 state 127
-	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE .  (50)
+	lof : TAG_OPEN LOF TAG_CLOSE items CLOSE_TAG_OPEN LOF TAG_CLOSE .  (51)
 
-	.  reduce 50
+	.  reduce 51
 
 
 state 128
-	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE .  (51)
+	lot : TAG_OPEN LOT TAG_CLOSE items CLOSE_TAG_OPEN LOT TAG_CLOSE .  (52)
 
-	.  reduce 51
+	.  reduce 52
 
 
 state 129
@@ -1123,7 +1124,7 @@ state 133
 state 134
 	section : TAG_OPEN . SECTION id title TAG_CLOSE section_content CLOSE_TAG_OPEN SECTION TAG_CLOSE  (31)
 	figure : TAG_OPEN . FIGURE id caption path CLOSE_TAG_CLOSE  (40)
-	table : TAG_OPEN . TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN . TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
 
 	SECTION  shift 119
 	FIGURE  shift 140
@@ -1183,7 +1184,7 @@ state 140
 
 
 state 141
-	table : TAG_OPEN TABLE . id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE . id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
 
 	ID  shift 37
 	.  error
@@ -1232,7 +1233,7 @@ state 147
 
 
 state 148
-	table : TAG_OPEN TABLE id . caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE id . caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
 
 	CAPTION  shift 150
 	.  error
@@ -1256,15 +1257,16 @@ state 150
 
 state 151
 	figure : TAG_OPEN FIGURE id caption . path CLOSE_TAG_CLOSE  (40)
+	path : .  (42)
 
 	PATH  shift 155
-	.  error
+	CLOSE_TAG_CLOSE  reduce 42
 
 	path  goto 156
 
 
 state 152
-	table : TAG_OPEN TABLE id caption . TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE id caption . TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
 
 	TAG_CLOSE  shift 157
 	.  error
@@ -1284,7 +1286,7 @@ state 154
 
 
 state 155
-	path : PATH . ATT_SEPARATOR VALUE  (42)
+	path : PATH . ATT_SEPARATOR VALUE  (43)
 
 	ATT_SEPARATOR  shift 159
 	.  error
@@ -1298,7 +1300,7 @@ state 156
 
 
 state 157
-	table : TAG_OPEN TABLE id caption TAG_CLOSE . rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE id caption TAG_CLOSE . rows CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
 
 	TAG_OPEN  shift 161
 	.  error
@@ -1314,7 +1316,7 @@ state 158
 
 
 state 159
-	path : PATH ATT_SEPARATOR . VALUE  (42)
+	path : PATH ATT_SEPARATOR . VALUE  (43)
 
 	VALUE  shift 164
 	.  error
@@ -1327,21 +1329,21 @@ state 160
 
 
 state 161
-	row : TAG_OPEN . ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (46)
+	row : TAG_OPEN . ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (47)
 
 	ROW  shift 165
 	.  error
 
 
 state 162
-	rows : row .  (44)
+	rows : row .  (45)
 
-	.  reduce 44
+	.  reduce 45
 
 
 state 163
-	table : TAG_OPEN TABLE id caption TAG_CLOSE rows . CLOSE_TAG_OPEN TABLE TAG_CLOSE  (43)
-	rows : rows . row  (45)
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows . CLOSE_TAG_OPEN TABLE TAG_CLOSE  (44)
+	rows : rows . row  (46)
 
 	TAG_OPEN  shift 161
 	CLOSE_TAG_OPEN  shift 166
@@ -1351,33 +1353,33 @@ state 163
 
 
 state 164
-	path : PATH ATT_SEPARATOR VALUE .  (42)
+	path : PATH ATT_SEPARATOR VALUE .  (43)
 
-	.  reduce 42
+	.  reduce 43
 
 
 state 165
-	row : TAG_OPEN ROW . TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (46)
+	row : TAG_OPEN ROW . TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (47)
 
 	TAG_CLOSE  shift 168
 	.  error
 
 
 state 166
-	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN . TABLE TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN . TABLE TAG_CLOSE  (44)
 
 	TABLE  shift 169
 	.  error
 
 
 state 167
-	rows : rows row .  (45)
+	rows : rows row .  (46)
 
-	.  reduce 45
+	.  reduce 46
 
 
 state 168
-	row : TAG_OPEN ROW TAG_CLOSE . cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (46)
+	row : TAG_OPEN ROW TAG_CLOSE . cells CLOSE_TAG_OPEN ROW TAG_CLOSE  (47)
 
 	TAG_OPEN  shift 170
 	.  error
@@ -1387,28 +1389,28 @@ state 168
 
 
 state 169
-	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE . TAG_CLOSE  (43)
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE . TAG_CLOSE  (44)
 
 	TAG_CLOSE  shift 173
 	.  error
 
 
 state 170
-	cell : TAG_OPEN . CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (49)
+	cell : TAG_OPEN . CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (50)
 
 	CELL  shift 174
 	.  error
 
 
 state 171
-	cells : cell .  (47)
+	cells : cell .  (48)
 
-	.  reduce 47
+	.  reduce 48
 
 
 state 172
-	row : TAG_OPEN ROW TAG_CLOSE cells . CLOSE_TAG_OPEN ROW TAG_CLOSE  (46)
-	cells : cells . cell  (48)
+	row : TAG_OPEN ROW TAG_CLOSE cells . CLOSE_TAG_OPEN ROW TAG_CLOSE  (47)
+	cells : cells . cell  (49)
 
 	TAG_OPEN  shift 170
 	CLOSE_TAG_OPEN  shift 175
@@ -1418,33 +1420,33 @@ state 172
 
 
 state 173
-	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE .  (43)
+	table : TAG_OPEN TABLE id caption TAG_CLOSE rows CLOSE_TAG_OPEN TABLE TAG_CLOSE .  (44)
 
-	.  reduce 43
+	.  reduce 44
 
 
 state 174
-	cell : TAG_OPEN CELL . TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (49)
+	cell : TAG_OPEN CELL . TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (50)
 
 	TAG_CLOSE  shift 177
 	.  error
 
 
 state 175
-	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN . ROW TAG_CLOSE  (46)
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN . ROW TAG_CLOSE  (47)
 
 	ROW  shift 178
 	.  error
 
 
 state 176
-	cells : cells cell .  (48)
+	cells : cells cell .  (49)
 
-	.  reduce 48
+	.  reduce 49
 
 
 state 177
-	cell : TAG_OPEN CELL TAG_CLOSE . pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (49)
+	cell : TAG_OPEN CELL TAG_CLOSE . pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE  (50)
 
 	CONTENT  shift 32
 	.  error
@@ -1453,44 +1455,44 @@ state 177
 
 
 state 178
-	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW . TAG_CLOSE  (46)
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW . TAG_CLOSE  (47)
 
 	TAG_CLOSE  shift 180
 	.  error
 
 
 state 179
-	cell : TAG_OPEN CELL TAG_CLOSE pcdata . CLOSE_TAG_OPEN CELL TAG_CLOSE  (49)
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata . CLOSE_TAG_OPEN CELL TAG_CLOSE  (50)
 
 	CLOSE_TAG_OPEN  shift 181
 	.  error
 
 
 state 180
-	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE .  (46)
+	row : TAG_OPEN ROW TAG_CLOSE cells CLOSE_TAG_OPEN ROW TAG_CLOSE .  (47)
 
-	.  reduce 46
+	.  reduce 47
 
 
 state 181
-	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN . CELL TAG_CLOSE  (49)
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN . CELL TAG_CLOSE  (50)
 
 	CELL  shift 182
 	.  error
 
 
 state 182
-	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL . TAG_CLOSE  (49)
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL . TAG_CLOSE  (50)
 
 	TAG_CLOSE  shift 183
 	.  error
 
 
 state 183
-	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE .  (49)
+	cell : TAG_OPEN CELL TAG_CLOSE pcdata CLOSE_TAG_OPEN CELL TAG_CLOSE .  (50)
 
-	.  reduce 49
+	.  reduce 50
 
 
 35 terminals, 36 nonterminals
-57 grammar rules, 184 states
+58 grammar rules, 184 states

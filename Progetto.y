@@ -59,7 +59,7 @@ TAG_OPEN BOOK edition TAG_CLOSE content CLOSE_TAG_OPEN BOOK TAG_CLOSE
 edition:
 /* epsilon */
 	{
-		$$ = 	",";
+		$$ = 	",\"@edition\": \"\",";
 	}
 	|
 EDITION ATT_SEPARATOR VALUE
@@ -133,7 +133,8 @@ TAG_OPEN PART id TAG_CLOSE part_cont CLOSE_TAG_OPEN PART TAG_CLOSE
 	{
 		$$ = 	"{" +
 				"\"tag\": " + "\"" + $2 + "\"," +
-				$3 +				
+				$3 +
+				"\"@title\" : \"\"," +
 				"\"content\": [" +
 				$5 + "]" +
 				"}";
@@ -334,6 +335,11 @@ CAPTION ATT_SEPARATOR VALUE
 	};
 
 path:
+/* epsilon */
+	{
+		$$ = 	"\"@path\": \"placeholder.jpg\",";
+	}
+	|
 PATH ATT_SEPARATOR VALUE
 	{
 		$$ = 	"\"@" + $1 + "\": " + $3;
