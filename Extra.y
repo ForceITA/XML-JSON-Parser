@@ -1,5 +1,7 @@
 %{
   import java.io.*;
+  import java.util.HashMap;
+  import java.util.Stack;
 %}
 
 /*
@@ -28,8 +30,17 @@
 
 doc:
 book
-	{
-		System.out.print(formatXML($1));
+	{	
+		String xml_intro = "<?xml version='1.0' encoding='UTF-8'?>";	
+		String xml_doc = "<!DOCTYPE book SYSTEM \"book.dtd\">";
+		String output = xml_intro + System.lineSeparator() + xml_doc + System.lineSeparator() + formatXML($1);	
+		try{
+			check();
+			System.out.print(output);
+		}
+		catch (IOException e) {
+			System.err.println("IO error :" + e);
+		}
 	};
 
 book:
@@ -125,6 +136,11 @@ COMMA lof
 id:
 ID ATT_SEPARATOR VALUE COMMA
 	{
+		if(idMap.containsKey($3)){
+			yyerror("Rilevato ID doppio: " + $3);
+		}else{
+			idMap.put($3, $3);
+		}
 		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 
@@ -160,6 +176,7 @@ OBJ_OPEN TAG ATT_SEPARATOR ITEM COMMA id_ref CONTENT ATT_SEPARATOR ARRAY_OPEN pc
 id_ref:
 ID ATT_SEPARATOR VALUE COMMA
 	{
+		idRef.push($3);
 		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 	
@@ -338,7 +355,11 @@ OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata AR
 
 	
 %%
+
   private Yylex lexer;
+  static char recordSeparator = 0x1e;
+  static HashMap<String, String> idMap = new HashMap<String, String>();
+  static Stack<String> idRef = new Stack<String>();
 
   private int yylex () {
     int yyl_return = -1;
@@ -369,43 +390,56 @@ OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata AR
       System.out.println("ERROR: Provide an input file as Parser argument");
     }
   }
+  
+  public void check() throws IOException{
+	for(String id : idRef){
+		if(!idMap.containsKey(id))
+		{
+			throw new IOException("Riferimento inesistente" + id);
+		}
+	}
+	return;
+  }
+  
   public String formatXML(String input){
 		String output = new String();
-		boolean inContent = true;
-		boolean inTag = false;
-		boolean inTagC = false;
 		int indenta = 0;
 		for(int i = 0; i < input.length(); i++){
 			switch(input.charAt(i))
 			{
 				case '<':
 					if(input.charAt(i + 1) == '/'){
-						inTagC = true;
 						i++;
 						output += System.lineSeparator();
 						indenta--;
-						for(int j = 0; j < indenta + 1; j++){
+						for(int j = 0; j < indenta; j++){
 							output += "\t"; 
 						}
 						output += "</";
 					}else{
-						inTag = true;
 						output += System.lineSeparator();
-						indenta++;
 						for(int j = 0; j < indenta; j++){
 							output += "\t";
 						}
+						indenta++;
 						output += "<";
 					}
 					break;
 				case '>':
 					if(i + 1 < input.length() && input.charAt(i + 1) != '<'){
-						output += "> \n";
-						for(int j = 0; j < indenta + 1; j++){
+						output += ">" + System.lineSeparator();
+						for(int j = 0; j < indenta; j++){
 							output += "\t";
 						}
 					}else{
 						output += ">";
+					}
+					break;
+				case '/':
+					if(input.charAt(i + 1) == '>'){
+						i++;
+						output += "/>";
+						indenta--;
 					}
 					break;
 				case 13:
@@ -414,7 +448,7 @@ OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata AR
 						i++;
 					}
 					output += System.lineSeparator();
-					for(int j = 0; j < indenta + 1; j++){
+					for(int j = 0; j < indenta; j++){
 						output += "\t";
 					}
 					break;
@@ -422,5 +456,5 @@ OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata AR
 					output += input.charAt(i);
 			}
 		}
-		return output;
+		return output.trim();
 	}

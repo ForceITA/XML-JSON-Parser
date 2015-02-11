@@ -92,7 +92,7 @@ TAG_OPEN DEDICATION TAG_CLOSE pcdata CLOSE_TAG_OPEN DEDICATION TAG_CLOSE
 pcdata:
 CONTENT
 	{
-		$$ = 	recordSeparator + "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n ") + "\"" + recordSeparator;
+		$$ = 	recordSeparator + "\"" + $1.trim().replaceAll("\\t", "").replaceAll("(\\r|\\n|\\r\\n)+", " \\\\n") + "\"" + recordSeparator;
 	};
 	
 preface:
@@ -586,7 +586,6 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 				for(int j = 0; j < indenta; j++)
 					output += "\t";
 			}
-			
 		}
 		return output;
   }

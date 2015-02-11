@@ -68,7 +68,6 @@ NL = \r\n|\r|\n
 /* START CONDITIONS */
 %x IN_OBJ IN_ARRAY
 
-
 %%
 
 /*
