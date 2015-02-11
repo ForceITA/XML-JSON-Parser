@@ -491,7 +491,6 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
   public static void main(String args[]) throws IOException {
     Parser yyparser;
     if ( args.length > 0 ) {
-      // Parse a file
       yyparser = new Parser(new FileReader(args[0]));
       yyparser.yyparse();
     } else {
@@ -510,7 +509,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
   }
   
   public String formatJSON(String input){
-		String output = "";
+		String output = new String();
 		boolean inTesto = false;
 		int indenta = 0;
 		for(int i=0; i < input.length(); i++)
@@ -526,7 +525,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 							if(input.charAt(i + 1) == '}' || input.charAt(i + 1) == ']')
 							{
 								indenta--;
-								output += "\r\n";
+								output += System.lineSeparator();
 								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}
@@ -535,7 +534,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 				case ',':
 					if(!inTesto)
 					{
-						output += "\r\n";
+						output += System.lineSeparator();
 						for(int j = 0; j < indenta; j++)
 							output += "\t";
 					}
@@ -560,7 +559,7 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 						if(i < (input.length() - 1))
 							if(input.charAt(i + 1) != ',')
 							{
-								output += "\r\n";
+								output += System.lineSeparator();
 								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}
@@ -569,11 +568,12 @@ TAG_OPEN NOTE TAG_CLOSE pcdata CLOSE_TAG_OPEN NOTE TAG_CLOSE
 				case 30:
 					if(inTesto)
 					{
+						
 						if(i<(input.length() - 1))
 							if(input.charAt(i + 1) == '}' || input.charAt(i+1) == ']')
 							{
 								indenta--;
-								output += "\r\n";
+								output += System.lineSeparator();
 								for(int j = 0; j < indenta; j++)
 									output += "\t";
 							}	

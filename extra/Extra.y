@@ -29,19 +29,19 @@
 doc:
 book
 	{
-		System.out.print($1);
+		System.out.print(formatXML($1));
 	};
 
 book:
 OBJ_OPEN TAG ATT_SEPARATOR BOOK COMMA edition CONTENT ATT_SEPARATOR ARRAY_OPEN content ARRAY_CLOSE OBJ_CLOSE
 	{	
-		$$ = "<" + $4 + " " + $6 + ">" + $10 +  "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + ">" + $10 +  "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 edition:
 EDITION ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 	
 content:
@@ -58,19 +58,19 @@ preface COMMA parts author_notes
 dedication:
 OBJ_OPEN TAG ATT_SEPARATOR DEDICATION COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">"; 
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">"; 
 	};
 
 pcdata:
 PCDATA
 	{
-		$$ = $1;
+		$$ = $1.substring(1, $1.length() - 1).trim().replaceAll("\\\\n|\\\\r|\\\\r\\\\n", System.lineSeparator());
 	};
 	
 preface:
 OBJ_OPEN TAG ATT_SEPARATOR PREFACE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" +  $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" +  $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 parts:
@@ -87,12 +87,12 @@ parts COMMA part
 part:
 OBJ_OPEN TAG ATT_SEPARATOR PART COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN part_cont ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + " " + $7 + ">" + $11 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	}
 	|
 OBJ_OPEN TAG ATT_SEPARATOR PART COMMA id CONTENT ATT_SEPARATOR ARRAY_OPEN part_cont ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 part_cont:
@@ -125,19 +125,19 @@ COMMA lof
 id:
 ID ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 
 title:
 TITLE ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 	
 toc:
 OBJ_OPEN TAG ATT_SEPARATOR TOC COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN items ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 items:
@@ -154,13 +154,13 @@ items COMMA item
 item:
 OBJ_OPEN TAG ATT_SEPARATOR ITEM COMMA id_ref CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + ">" + $10 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + ">" + $10 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 id_ref:
 ID ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 	
 chapters:
@@ -177,7 +177,7 @@ chapters COMMA chapter
 chapter:
 OBJ_OPEN TAG ATT_SEPARATOR CHAPTER COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN sections ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + " " + $7 + ">" + $11 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 sections:
@@ -194,7 +194,7 @@ sections COMMA section
 section:
 OBJ_OPEN TAG ATT_SEPARATOR SECTION COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN section_content ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 +  " " + $6 + " " + $7 + ">" + $11 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) +  " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 section_content:
@@ -242,25 +242,25 @@ table
 figure:
 OBJ_OPEN TAG ATT_SEPARATOR FIGURE COMMA id caption path OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + " " + $7 + " " + $8 + "/>";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + " " + $8 + "/>";
 	};
 
 caption:
 CAPTION ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 
 path:
 PATH ATT_SEPARATOR VALUE
 	{
-		$$ = $1 + "=" + $3;
+		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
 	
 table:
 OBJ_OPEN TAG ATT_SEPARATOR TABLE COMMA id caption CONTENT ATT_SEPARATOR ARRAY_OPEN rows ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + " " + $6 + " " + $7 + ">" + $11 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 rows:
@@ -277,7 +277,7 @@ rows COMMA row
 row:
 OBJ_OPEN TAG ATT_SEPARATOR ROW COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN cells ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 cells:
@@ -294,19 +294,19 @@ cells COMMA cell
 cell:
 OBJ_OPEN TAG ATT_SEPARATOR CELL COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 lof:
 OBJ_OPEN TAG ATT_SEPARATOR LOF COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN items ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 lot:
 OBJ_OPEN TAG ATT_SEPARATOR LOT COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN items ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $9 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 author_notes:
@@ -316,7 +316,7 @@ author_notes:
 	|
 COMMA OBJ_OPEN TAG ATT_SEPARATOR AUTHOR_NOTES COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN notes ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $5 + ">" + $10 + "</" + $5 + ">";
+		$$ = "<" + $5.substring(1, $5.length() - 1) + ">" + $10 + "</" + $5.substring(1, $5.length() - 1) + ">";
 	};
 	
 notes:
@@ -327,13 +327,13 @@ note
 	|
 notes COMMA note
 	{
-		$$ = $1 + $2;
+		$$ = $1 + $3;
 	};
 	
 note:
 OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4 + ">" + $8 + "</" + $4 + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + ">" + $9 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 	
@@ -363,11 +363,64 @@ OBJ_OPEN TAG ATT_SEPARATOR NOTE COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN pcdata AR
   public static void main(String args[]) throws IOException {
     Parser yyparser;
     if ( args.length > 0 ) {
-      // Parse a file
       yyparser = new Parser(new FileReader(args[0]));
       yyparser.yyparse();
-    }
-    else {
+    } else {
       System.out.println("ERROR: Provide an input file as Parser argument");
     }
   }
+  public String formatXML(String input){
+		String output = new String();
+		boolean inContent = true;
+		boolean inTag = false;
+		boolean inTagC = false;
+		int indenta = 0;
+		for(int i = 0; i < input.length(); i++){
+			switch(input.charAt(i))
+			{
+				case '<':
+					if(input.charAt(i + 1) == '/'){
+						inTagC = true;
+						i++;
+						output += System.lineSeparator();
+						indenta--;
+						for(int j = 0; j < indenta + 1; j++){
+							output += "\t"; 
+						}
+						output += "</";
+					}else{
+						inTag = true;
+						output += System.lineSeparator();
+						indenta++;
+						for(int j = 0; j < indenta; j++){
+							output += "\t";
+						}
+						output += "<";
+					}
+					break;
+				case '>':
+					if(i + 1 < input.length() && input.charAt(i + 1) != '<'){
+						output += "> \n";
+						for(int j = 0; j < indenta + 1; j++){
+							output += "\t";
+						}
+					}else{
+						output += ">";
+					}
+					break;
+				case 13:
+				case 10:
+					if(input.charAt(i) == 13 && input.charAt(i + 1) == 10 ){
+						i++;
+					}
+					output += System.lineSeparator();
+					for(int j = 0; j < indenta + 1; j++){
+						output += "\t";
+					}
+					break;
+				default:
+					output += input.charAt(i);
+			}
+		}
+		return output;
+	}
