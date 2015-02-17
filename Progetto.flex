@@ -63,7 +63,7 @@ SYMBOLS = (\.|\,|\;|\:|\?|\^|\!|\"|\'|\$|\&|\£|\%|\(|\)|\=|\*|\[|\]|\\|\+|\-|\_
 /* CONTENT - Usato come PCDATA */
 CONTENT =(({NL}|[ \t])*({ACCENT}|{SYMBOLS}|[a-zA-Z0-9])+({NL}|[ \t])*)*
 /* COMMENT */
-COMMENT = <\!\-\-+ ([^\-\-] | [\r\n] | (\-+ ([^\-\->] | [\r\n])) )* \-+\->[ \t]*
+COMMENT = <\!\-\- ([^\-\-] | [\r\n] | (\- ([^\-\->] | {NL})) )* \-\->[ \t]*
 
 /* SPECIAL CHARACTERS */
 NL = \r\n|\r|\n

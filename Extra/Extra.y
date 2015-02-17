@@ -46,13 +46,17 @@ book
 book:
 OBJ_OPEN TAG ATT_SEPARATOR BOOK COMMA edition CONTENT ATT_SEPARATOR ARRAY_OPEN content ARRAY_CLOSE OBJ_CLOSE
 	{	
-		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + ">" + $10 +  "</" + $4.substring(1, $4.length() - 1) + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + $6 + ">" + $10 +  "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 
 edition:
 EDITION ATT_SEPARATOR VALUE COMMA
 	{
-		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
+		if($3.equals("\"\"")){
+			$$ = "";
+		}else{
+			$$ = " " + $1.substring(2, $1.length() - 1) + "=" + $3;
+		}
 	};
 	
 content:
@@ -96,9 +100,13 @@ parts COMMA part
 	};
 	
 part:
-OBJ_OPEN TAG ATT_SEPARATOR PART COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN part_cont ARRAY_CLOSE OBJ_CLOSE
+OBJ_OPEN TAG ATT_SEPARATOR PART COMMA id title COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN part_cont ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
+		if($7.length() == 8){
+			$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + ">" + $12 + "</" + $4.substring(1, $4.length() - 1) + ">";
+		}else{
+			$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $12 + "</" + $4.substring(1, $4.length() - 1) + ">";
+		}
 	}
 	|
 OBJ_OPEN TAG ATT_SEPARATOR PART COMMA id CONTENT ATT_SEPARATOR ARRAY_OPEN part_cont ARRAY_CLOSE OBJ_CLOSE
@@ -145,7 +153,7 @@ ID ATT_SEPARATOR VALUE COMMA
 	};
 
 title:
-TITLE ATT_SEPARATOR VALUE COMMA
+TITLE ATT_SEPARATOR VALUE
 	{
 		$$ = $1.substring(2, $1.length() - 1) + "=" + $3;
 	};
@@ -192,9 +200,9 @@ chapters COMMA chapter
 	};
 	
 chapter:
-OBJ_OPEN TAG ATT_SEPARATOR CHAPTER COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN sections ARRAY_CLOSE OBJ_CLOSE
+OBJ_OPEN TAG ATT_SEPARATOR CHAPTER COMMA id title COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN sections ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
+		$$ = "<" + $4.substring(1, $4.length() - 1) + " " + $6 + " " + $7 + ">" + $12 + "</" + $4.substring(1, $4.length() - 1) + ">";
 	};
 	
 sections:
@@ -209,10 +217,15 @@ sections COMMA section
 	};
 	
 section:
-OBJ_OPEN TAG ATT_SEPARATOR SECTION COMMA id title CONTENT ATT_SEPARATOR ARRAY_OPEN section_content ARRAY_CLOSE OBJ_CLOSE
+OBJ_OPEN TAG ATT_SEPARATOR SECTION COMMA id title COMMA CONTENT ATT_SEPARATOR ARRAY_OPEN section_content ARRAY_CLOSE OBJ_CLOSE
 	{
-		$$ = "<" + $4.substring(1, $4.length() - 1) +  " " + $6 + " " + $7 + ">" + $11 + "</" + $4.substring(1, $4.length() - 1) + ">";
-	};
+		$$ = "<" + $4.substring(1, $4.length() - 1) +  " " + $6 + " " + $7 + ">" + $12 + "</" + $4.substring(1, $4.length() - 1) + ">";
+	}
+	|
+OBJ_OPEN TAG ATT_SEPARATOR SECTION COMMA id title OBJ_CLOSE
+	{
+		$$ = "<" + $4.substring(1, $4.length() - 1) +  " " + $6 + " " + $7 + " />";
+	}
 
 section_content:
 section_content COMMA pcdata

@@ -277,8 +277,7 @@ TAG_OPEN SECTION id title CLOSE_TAG_CLOSE
 		$$ = 	"{" + 
 				"\"tag\": " + "\"" + $2 + "\"," +
 				$3 +
-				$4 +
-				"\"content\": []" +
+				$4.substring(0, $4.length() - 1) +
 				"}";
 	};
 	
